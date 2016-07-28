@@ -70,3 +70,9 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'authorized:view-dashboar
 |--------------------------------------------------------------------------
 */
 Route::auth();
+
+
+Route::group(['prefix' => 'camp'], function () {
+    Route::get('list.json', 'Campaigns\CampaignsController@getCamps');//获取campaigns列表
+    Route::put('lp.json', 'Campaigns\CampaignsController@putLP');//修改LP内容
+});
