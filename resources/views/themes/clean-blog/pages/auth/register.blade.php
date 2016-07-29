@@ -8,9 +8,9 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="site-heading">
-                        <h1>Vuedo Deluxe</h1>
+                        <h1>Affiliate Register</h1>
                         <hr class="small">
-                        <span class="subheading">A Clean Blog Theme by Start Bootstrap</span>
+                        <span class="subheading"></span>
                     </div>
                 </div>
             </div>
@@ -29,9 +29,35 @@
       {{ csrf_field() }}
         <div class="row control-group">
             <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }} form-group col-xs-12 floating-label-form-group controls">
-              <label for="email">E-Mail Address</label>
+                <label for="name">姓名</label>
 
-                  <input id="email" placeholder="E-mail Address *" type="email" class="form-control" name="email" value="{{ old('email') }}">
+                <input id="name" placeholder="姓名 *" type="name" class="form-control" name="name" value="{{ old('name') }}">
+
+                @if ($errors->has('name'))
+                    <span class="help-block">
+                          <strong>{{ $errors->first('name') }}</strong>
+                      </span>
+                @endif
+            </div>
+        </div>
+        <div class="row control-group">
+            <div class="form-group{{ $errors->has('username') ? ' has-error' : '' }} form-group col-xs-12 floating-label-form-group controls">
+                <label for="username">用户名</label>
+
+                <input id="username" placeholder="用户名 *" type="username" class="form-control" name="email" value="{{ old('username') }}">
+
+                @if ($errors->has('username'))
+                    <span class="help-block">
+                          <strong>{{ $errors->first('username') }}</strong>
+                      </span>
+                @endif
+            </div>
+        </div>
+        <div class="row control-group">
+            <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }} form-group col-xs-12 floating-label-form-group controls">
+              <label for="email">邮箱</label>
+
+                  <input id="email" placeholder="邮箱 *" type="email" class="form-control" name="email" value="{{ old('email') }}">
 
                   @if ($errors->has('email'))
                       <span class="help-block">
@@ -44,7 +70,7 @@
             <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }} form-group col-xs-12 floating-label-form-group controls">
               <label for="password">Password</label>
 
-                  <input id="password" placeholder="Password *" type="password" class="form-control" name="password">
+                  <input id="password" placeholder="密码 *" type="password" class="form-control" name="password">
 
                   @if ($errors->has('password'))
                       <span class="help-block">
@@ -55,9 +81,9 @@
         </div>
         <div class="row control-group">
             <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }} form-group col-xs-12 floating-label-form-group controls">
-              <label for="password-confirm">Confirm Password</label>
+              <label for="password-confirm">确认密码</label>
 
-                  <input id="password-confirm" placeholder="Password Confirmation *" type="password" class="form-control" name="password_confirmation">
+                  <input id="password-confirm" placeholder="确认密码 *" type="password" class="form-control" name="password_confirmation">
 
                   @if ($errors->has('password_confirmation'))
                       <span class="help-block">

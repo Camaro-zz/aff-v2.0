@@ -58,7 +58,7 @@ Route::group(['prefix' => 'api', 'middleware' => 'api', 'namespace' => 'Api'], f
 | Dashboard Routes
 |--------------------------------------------------------------------------
 */
-Route::group(['prefix' => 'dashboard', 'middleware' => 'authorized:view-dashboard'], function () {
+Route::group(['prefix' => 'admin', 'middleware' => 'authorized:view-dashboard'], function () {
     Route::get('/{vue_capture?}', function () {
         return view('admin.index');
     })->where('vue_capture', '[\/\w\.-]*');
@@ -74,5 +74,10 @@ Route::auth();
 
 Route::group(['prefix' => 'camp'], function () {
     Route::get('list.json', 'Campaigns\CampaignsController@getCamps');//获取campaigns列表
+
+    Route::get('{camp_id}/offer.json', 'Campaigns\CampaignsController@getOffer');//根据活动id获取offer内容
+    Route::put('offer.json', 'Campaigns\CampaignsController@putOffer');//修改LP内容
+
+    Route::get('{camp_id}/lp.json', 'Campaigns\CampaignsController@getLP');//根据活动id获取lp内容
     Route::put('lp.json', 'Campaigns\CampaignsController@putLP');//修改LP内容
 });

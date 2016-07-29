@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="/css/pnotify.buttons.css">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
     <!-- Sweetalert -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/sweetalert2/4.0.5/sweetalert2.css">
     <!-- Theme style -->
@@ -48,11 +48,11 @@
 <script src="{{'/js/main.js'}}"></script>
 
 <!-- Live Reload -->
-@if ( Config::get('app.debug') )
+{{--@if ( Config::get('app.debug') )
     <script type="text/javascript">
         document.write('<script src="//localhost:35729/livereload.js?snipver=1" type="text/javascript"><\/script>')
     </script>
-@endif
+@endif--}}
 </body>
 </html>
 

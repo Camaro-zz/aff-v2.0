@@ -5,7 +5,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <ul class="list-inline text-center">
+                {{--<ul class="list-inline text-center">
                     <li>
                         <a href="#">
                                 <span class="fa-stack fa-lg">
@@ -30,8 +30,8 @@
                                 </span>
                         </a>
                     </li>
-                </ul>
-                <p class="copyright text-muted">Copyright &copy; Your Website 2016</p>
+                </ul>--}}
+                <p class="copyright text-muted">Copyright &copy; wuxin 2016</p>
             </div>
         </div>
     </div>

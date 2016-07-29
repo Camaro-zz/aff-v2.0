@@ -3,9 +3,9 @@
     <!-- Logo -->
     <a @click="goHome" href="#" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>V</b>UE</span>
+      <span class="logo-mini"><b>A</b>FF</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Vue.js</b> News</span>
+      <span class="logo-lg"><b>Affiliate</b> Marketing</span>
     </a>
     <!-- Header Navbar -->
     <nav class="navbar navbar-static-top" role="navigation">
@@ -43,10 +43,10 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a v-link="{ path: '/profile' }" class="btn btn-default btn-flat">Profile</a>
+                  <a v-link="{ path: '/profile' }" class="btn btn-default btn-flat">个人</a>
                 </div>
                 <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat" @click="logout">Log out</a>
+                  <a href="#" class="btn btn-default btn-flat" @click="logout">登出</a>
                 </div>
               </li>
             </ul>

@@ -40,8 +40,11 @@
     "test": "tests"
   },
   "dependencies": {
+    "ansi-regex": "^2.0.0",
     "dropzone": "^4.3.0",
+    "escape-string-regexp": "^1.0.5",
     "simplemde": "^1.11.2",
+    "supports-color": "^3.1.2",
     "vue-multiselect": "^0.3.0",
     "vuejs-paginator": "^1.0.14"
   },

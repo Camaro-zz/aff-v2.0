@@ -16,6 +16,21 @@ class CampaignsController extends Controller {
         return Response::json($data, 200);
     }
 
+    public function getOffer($camp_id){
+        $data = $this->campaignsService->getOffer($camp_id);
+        return Response::json($data, 200);
+    }
+
+    public function putOffer(Request $request){
+        $data = $this->campaignsService->putOffer($request->all());
+        return Response::json($data, 200);
+    }
+
+    public function getLP($camp_id){
+        $data = $this->campaignsService->getLP($camp_id);
+        return Response::json($data, 200);
+    }
+
     public function putLP(Request $request){
         $data = $this->campaignsService->putLP($request->all());
         return Response::json($data, 200);

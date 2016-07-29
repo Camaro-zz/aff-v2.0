@@ -1,4 +1,4 @@
-@extends('themes.clean-blog.partials.layout')
+@extends('themes.clean-blog.layouts.default')
 
 @section("header")
     <!-- Page Header -->
@@ -8,9 +8,9 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="site-heading">
-                        <h1>Vuedo Deluxe</h1>
+                        <h1>Affiliate Reset</h1>
                         <hr class="small">
-                        <span class="subheading">A Clean Blog Theme by Start Bootstrap</span>
+                        <span class="subheading"></span>
                     </div>
                 </div>
             </div>
@@ -33,8 +33,8 @@
     <form role="form" method="POST" action="{{ url('/password/email') }}">
         <div class="row control-group">
             <div class="form-group col-xs-12 floating-label-form-group controls">
-                <label>Email Address</label>
-                <input type="email" id="email" placeholder="E-mail Address *" class="form-control" name="email" value="{{ old('email') }}">
+                <label>邮箱</label>
+                <input type="email" id="email" placeholder="邮箱 *" class="form-control" name="email" value="{{ old('email') }}">
                 @if ($errors->has('email'))
                     <span class="help-block">
                         <strong>{{ $errors->first('email') }}</strong>
@@ -46,7 +46,7 @@
         <div class="row">
             <div class="form-group col-xs-12">
                 <button type="submit" class="btn btn-default">
-                  <i class="fa fa-btn fa-envelope"></i> Send Password Reset Link
+                  <i class="fa fa-btn fa-envelope"></i> Send New Password
                 </button>
             </div>
         </div>
