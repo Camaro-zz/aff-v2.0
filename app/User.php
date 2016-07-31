@@ -78,8 +78,8 @@ class User extends Authenticatable
         return $this->where('role_level', '!=', 9);
     }
 
-    //Mutators
+    /*//Mutators
     public function getAvatarAttribute(){
         return 'https://www.gravatar.com/avatar/'. md5($this->email);
-    }
+    }*/
 }

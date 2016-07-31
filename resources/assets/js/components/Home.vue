@@ -5,14 +5,14 @@
         <span class="info-box-icon bg-aqua"><i class="fa fa-list"></i></span>
 
         <div class="info-box-content">
-          <span class="info-box-text">Posts</span>
-          <span class="info-box-number">{{posts.length}}</span>
+          <span class="info-box-text">Campaigns</span>
+          <span class="info-box-number">{{campaigns.num}}</span>
         </div>
         <!-- /.info-box-content -->
       </div>
       <!-- /.info-box -->
     </div>
-    <div class="col-md-3 col-sm-6 col-xs-12">
+    <!--<div class="col-md-3 col-sm-6 col-xs-12">
       <div class="info-box">
         <span class="info-box-icon bg-orange"><i class="fa fa-th-large"></i></span>
 
@@ -20,17 +20,17 @@
           <span class="info-box-text">Categories</span>
           <span class="info-box-number">{{categories.length}}</span>
         </div>
-        <!-- /.info-box-content -->
+        &lt;!&ndash; /.info-box-content &ndash;&gt;
       </div>
-      <!-- /.info-box -->
-    </div>
+      &lt;!&ndash; /.info-box &ndash;&gt;
+    </div>-->
     <div class="col-md-3 col-sm-6 col-xs-12">
       <div class="info-box">
         <span class="info-box-icon bg-purple"><i class="fa fa-users"></i></span>
 
         <div class="info-box-content">
           <span class="info-box-text">Users</span>
-          <span class="info-box-number">3</span>
+          <span class="info-box-number">{{users.num}}</span>
         </div>
         <!-- /.info-box-content -->
       </div>
@@ -48,24 +48,24 @@
 <script>
 export default {
   ready () {
-   this.fetchPosts()
-   this.fetchCategories()
+   this.fetchCampaigns()
+   this.fetchUsers()
   },
   data () {
     return {
-      posts: [],
-      categories:[],
+      campaigns: [],
+      users:[],
     }
   },
   methods: {
-    fetchPosts () {
-      this.$http({url: '/api/posts', method: 'GET'}).then(function (response) {
-        this.$set('posts', response.data.data)
+    fetchCampaigns () {
+      this.$http({url: '/camp/list_num.json', method: 'GET'}).then(function (response) {
+        this.$set('campaigns', response.data)
       })
     },
-    fetchCategories() {
-      this.$http({url: '/api/categories', method: 'GET'}).then(function (response) {
-        this.$set('categories', response.data.data)
+    fetchUsers() {
+      this.$http({url: '/camp/user_num.json', method: 'GET'}).then(function (response) {
+        this.$set('users', response.data)
       })
     },
   }

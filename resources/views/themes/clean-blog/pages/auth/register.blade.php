@@ -44,7 +44,7 @@
             <div class="form-group{{ $errors->has('username') ? ' has-error' : '' }} form-group col-xs-12 floating-label-form-group controls">
                 <label for="username">用户名</label>
 
-                <input id="username" placeholder="用户名 *" type="username" class="form-control" name="email" value="{{ old('username') }}">
+                <input id="username" placeholder="用户名 *" type="username" class="form-control" name="username" value="{{ old('username') }}">
 
                 @if ($errors->has('username'))
                     <span class="help-block">

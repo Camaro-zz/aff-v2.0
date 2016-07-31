@@ -20,7 +20,11 @@ class MeController extends ApiController
     public function __construct(Request $request)
     {
 //        $this->middleware('authorized:manage-category,categories', ['except' => ['index', 'show']]);
+        //dd($request->user());
         $this->user = $request->user();
+        if(!$this->user['avatar']){
+            $this->user['avatar'] = '/img/avatar.jpg';
+        }
     }
 
     /**

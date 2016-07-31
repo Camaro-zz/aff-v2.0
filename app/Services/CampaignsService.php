@@ -7,9 +7,15 @@ use App\Models\CampaignsLPs;
 use App\Models\CampaignsLead;
 use App\Models\CampaignsOffers;
 use App\Models\CampaignsStat;
+use App\User;
 
 class CampaignsService extends BaseService {
     public function __construct(){
+    }
+
+    public function getCamp($camp_id){
+        $camp = Campaigns::where('camp_id',$camp_id)->select('camp_name','camp_id')->first();
+        return $camp;
     }
 
     /**获取campaigns列表
@@ -18,16 +24,19 @@ class CampaignsService extends BaseService {
      * @param $param['limit']    查询数目
      */
     public function getCamps($param){
-        $offset = isset($param['offset']) ? $param['offset'] : 0;
+        $page = isset($param['page']) ? $param['page'] : 1;
         $limit = isset($param['limit']) ? $param['limit'] : 10;
+        $offset = ($page - 1) * $limit;
         $keywords = isset($param['keywords']) ? trim($param['keywords']) : '';
         $query = Campaigns::leftJoin('mt_temp_stats as stats', 'stats.camp_id','=','mt_campaigns.camp_id')
-                          ->select('mt_campaigns.camp_status','mt_campaigns.camp_name','mt_campaigns.camp_cpc','stats.*');
+                          ->select('mt_campaigns.camp_status','mt_campaigns.camp_name','mt_campaigns.camp_cpc','stats.*','mt_campaigns.camp_id')
+                          ->orderBy('mt_campaigns.camp_id','DESC')
+                          ->orderBy('mt_campaigns.camp_status','DESC');
 
         if($keywords){
             $query->where('camp_name', 'like', '%' . $keywords . '%');
         }
-
+        $count = $query->count();
         $query->skip($offset);
         $query->take($limit);
         $res = $query->get();
@@ -48,9 +57,27 @@ class CampaignsService extends BaseService {
             }
         }*/
         //dd($res);
-        return $res;
+        $data['data'] = $res;
+        $data['count'] = ceil($count/$limit);
+        $data['page'] = $page;
+        return $data;
     }
 
+    public function getCampsNum(){
+        $num = Campaigns::count();
+        return ['num' => $num];
+    }
+
+    public function getUsers(){
+        $users = User::select('name','username','email','avatar')->get();
+        $data['data'] = $users;
+        return $data;
+    }
+
+    public function getUsersNum(){
+        $num = User::count();
+        return ['num' => $num];
+    }
     /**获取活动的lp内容
      * @param $camp_id
      * @return mixed
@@ -71,7 +98,11 @@ class CampaignsService extends BaseService {
             $lps[$k]['clicks'] = CampaignsClick::where(array('camp_id'=>$camp_id,'lp_id'=>$v['lp_id']))->count();
             $lps[$k]['cvrs'] = CampaignsClick::where(array('camp_id'=>$camp_id,'lp_id'=>$v['lp_id'],'lp_lead'=>1,'lp_lead'=>1))->count();
             $lps[$k]['views'] = CampaignsClick::where(array('camp_id'=>$camp_id,'lp_id'=>$v['lp_id']))->sum('lp_view');
-            $lps[$k]['cvr_rate'] = $lps[$k]['cvrs'] / $lps[$k]['clicks'] * 100;
+            if($lps[$k]['clicks'] > 0){
+                $lps[$k]['cvr_rate'] = $lps[$k]['cvrs'] / $lps[$k]['clicks'] * 100;
+            }else{
+                $lps[$k]['cvr_rate'] = 0;
+            }
         }
 
         return $lps;
@@ -110,7 +141,7 @@ class CampaignsService extends BaseService {
             return ['status'=>'false','msg'=>'参数错误'];
         }
 
-        $offer = CampaignsOffers::select('offer_id','offer_name','lp_weight','offer_url','offer_weight')
+        $offer = CampaignsOffers::select('offer_id','offer_name','offer_url','offer_weight')
             ->where('camp_id',$camp_id)
             ->get();
         if(!$offer){
@@ -121,13 +152,17 @@ class CampaignsService extends BaseService {
             $offer[$k]['clicks'] = CampaignsClick::where(array('camp_id'=>$camp_id,'offer_id'=>$v['offer_id']))->count();
             $offer[$k]['cvrs'] = CampaignsClick::where(array('camp_id'=>$camp_id,'offer_id'=>$v['offer_id'],'lp_lead'=>1,'click_lead'=>1))->count();
             //$offer[$k]['views'] = CampaignsClick::where(array('camp_id'=>$camp_id,'offer_id'=>$v['offer_id']))->sum('lp_view');
-            $offer[$k]['cvr_rate'] = $offer[$k]['cvrs'] / $offer[$k]['clicks'] * 100;
+            if($offer[$k]['clicks'] > 0){
+                $offer[$k]['cvr_rate'] = $offer[$k]['cvrs'] / $offer[$k]['clicks'] * 100;
+            }else{
+                $offer[$k]['cvr_rate'] = 0;
+            }
         }
 
         return $offer;
     }
 
-    /**设置LP占比
+    /**设置offer占比
      * @param $param['data']    {'id1':'weight1', 'id2':'weight2'}
      * @param $param['camp_id'] 活动id
      */
