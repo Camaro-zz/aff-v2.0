@@ -9,6 +9,8 @@ class Campaigns extends Model{
 
     protected $guarded = ['camp_id'];
 
+    public    $timestamps = false;
+
     public function hasManyLPs(){
 
         return $this->hasMany('App\Models\CampaignsLPs', 'camp_id', 'camp_id');

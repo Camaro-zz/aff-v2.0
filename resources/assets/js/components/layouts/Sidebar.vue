@@ -85,7 +85,8 @@ h1 {
   color: #42b983;
 }
 aside {
-  min-height: 1000px;
+  position: fixed;
+  height: 100%;
 }
 .user-panel {
   cursor: pointer;

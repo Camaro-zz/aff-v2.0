@@ -18,7 +18,7 @@
                           <input class="form-control" id="title" placeholder="title" v-model="camp.camp_name">
                         </div>
                       </div>
-                        <button type="button" @click="updatePost(post)" class="btn btn-lg btn-primary btn-flat pull-right">保存</button>
+                        <button type="button" @click="updateCampaigns(camp)" class="btn btn-lg btn-primary btn-flat pull-right">保存</button>
                     </div>
                 </div>
             </div>
@@ -58,12 +58,12 @@
                             <td class="col-md-1">{{lp.clicks}}</td>
                             <td class="col-md-1">{{lp.cvrs}}</td>
                             <td class="col-md-1">{{lp.cvr_rate}}</td>
-                            <td class="col-md-1">{{lp.lp_weight}}%</td>
+                            <td class="col-md-1"><input class="i-class-col" v-bind:value="lp.lp_weight">%</td>
                         </tr>
                     </table>
                 </div>
                 <div class="box-body pad">
-                    <button type="button" @click="updatePost(post)" class="btn btn-lg btn-primary btn-flat pull-right">保存</button>
+                    <button type="button" @click="updateLPs(lps)" class="btn btn-lg btn-primary btn-flat pull-right">保存</button>
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -99,12 +99,12 @@
                             <td class="col-md-1">{{offer.clicks}}</td>
                             <td class="col-md-1">{{offer.cvrs}}</td>
                             <td class="col-md-1">{{offer.cvr_rate}}</td>
-                            <td class="col-md-1">{{offer.offer_weight}}%</td>
+                            <td class="col-md-1"><input class="i-class-col" v-bind:value="offer.offer_weight">%</td>
                         </tr>
                     </table>
                 </div>
                 <div class="box-body pad">
-                    <button type="button" @click="updatePost(post)" class="btn btn-lg btn-primary btn-flat pull-right">保存</button>
+                    <button type="button" @click="updateOffers(offers)" class="btn btn-lg btn-primary btn-flat pull-right">保存</button>
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -116,6 +116,9 @@
 
 <style>
     .content{min-height:0}
+    .i-class-col{
+        width:30%;
+    }
 </style>
 
 <script>
@@ -163,6 +166,16 @@ export default {
             this.$http({url: '/camp/' + this.camp_id + '/lp.json', method: 'GET'}).then(function (response) {
                 this.$set('lps', response.data)
             })
+        },
+        updateCampaigns(camp){
+            this.$http.put('/camp/edit/' + this.camp_id + '.json', camp).then((response) => {
+                show_stack_success('保存成功！', response)
+            }, function (response){
+                show_stack_error('保存失败！', response)
+            });
+        },
+        updateOffers(offers){
+            console.log(offers);
         }
     },
     computed: {

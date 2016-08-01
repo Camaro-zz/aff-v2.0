@@ -63,6 +63,21 @@ class CampaignsService extends BaseService {
         return $data;
     }
 
+    /**
+     * 修改campaigns内容
+     * @param $param
+     */
+    public function putCamp($param){
+        $title = $param['camp_name'];
+        $id = $param['camp_id'];
+        $update = Campaigns::where('camp_id',$id)->update(['camp_name'=>$title]);
+        if($update){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public function getCampsNum(){
         $num = Campaigns::count();
         return ['num' => $num];

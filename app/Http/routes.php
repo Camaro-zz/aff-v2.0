@@ -75,6 +75,7 @@ Route::auth();
 Route::group(['prefix' => 'camp'], function () {
     Route::get('list.json', 'Campaigns\CampaignsController@getCamps');//获取campaigns列表
     Route::get('list_num.json', 'Campaigns\CampaignsController@getCampsNum');//获取campaign数量
+    Route::put('edit/{camp_id}.json', 'Campaigns\CampaignsController@putCamp');//修改campaign内容
     Route::get('user_num.json', 'Campaigns\CampaignsController@getUsersNum');//获取users数量
 
     Route::get('info/{camp_id}.json', 'Campaigns\CampaignsController@getCamp');

@@ -21,6 +21,11 @@ class CampaignsController extends Controller {
         return Response::json($data, 200);
     }
 
+    public function putCamp(Request $request){
+        $data = $this->campaignsService->putCamp($request->all());
+        return Response::json($data, 200);
+    }
+
     public function getCampsNum(){
         $data = $this->campaignsService->getCampsNum();
         return Response::json($data, 200);

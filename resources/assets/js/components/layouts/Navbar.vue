@@ -58,6 +58,16 @@
   </header>
 </template>
 
+<style>
+  .main-header{
+    position: fixed;
+    max-height: 100px;
+    z-index: 1030;
+    width: 100%;
+  }
+</style>
+
+
 <script>
 
 export default {
