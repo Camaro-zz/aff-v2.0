@@ -125,26 +125,23 @@ class CampaignsService extends BaseService {
 
     /**设置LP占比
      * @param $param['data']    {'id1':'weight1', 'id2':'weight2'}
-     * @param $param['camp_id'] 活动id
      */
     public function putLP($param){
-        $data = isset($param['data']) ? json_decode($param['data']) : '';
-        $camp_id = isset($param['camp_id']) ? intval($param['camp_id']) : '';
-        if($data == 0 || !$camp_id){
-            return ['status'=>'false','msg'=>'参数错误'];
+        if(empty($param) === TRUE){
+            return ['status'=>false,'msg'=>'参数错误'];
         }
 
         $total_weight = 0;
-        foreach ($data as $k=>$v){
+        foreach ($param as $k=>$v){
             $total_weight+=$v;
         }
         if($total_weight != 100){
-            return ['status'=>'false','msg'=>'LP占比相加必须为100'];
+            return ['status'=>false,'msg'=>'LP占比相加必须为100'];
         }
-        foreach ($data as $k=>$v){
-            CampaignsLPs::where(array('lp_id'=>$k,'camp_id'=>$camp_id))->update(['lp_weight'=>$v]);
+        foreach ($param as $k=>$v){
+            CampaignsLPs::where(array('lp_id'=>$k))->update(['lp_weight'=>$v]);
         }
-        return true;
+        return ['status'=>true];
     }
 
     /**
@@ -179,25 +176,21 @@ class CampaignsService extends BaseService {
 
     /**设置offer占比
      * @param $param['data']    {'id1':'weight1', 'id2':'weight2'}
-     * @param $param['camp_id'] 活动id
      */
     public function putOffer($param){
-        $data = isset($param['data']) ? json_decode($param['data']) : '';
-        $camp_id = isset($param['camp_id']) ? intval($param['camp_id']) : '';
-        if($data == 0 || !$camp_id){
-            return ['status'=>'false','msg'=>'参数错误'];
+        if(empty($param) === TRUE){
+            return ['status'=>false,'msg'=>'参数错误'];
         }
-
         $total_weight = 0;
-        foreach ($data as $k=>$v){
+        foreach ($param as $k=>$v){
             $total_weight+=$v;
         }
         if($total_weight != 100){
-            return ['status'=>'false','msg'=>'offer占比相加必须为100'];
+            return ['status'=>false,'msg'=>'offer占比相加必须为100'];
         }
-        foreach ($data as $k=>$v){
-            CampaignsOffers::where(array('offer_id'=>$k,'camp_id'=>$camp_id))->update(['lp_weight'=>$v]);
+        foreach ($param as $k=>$v){
+            CampaignsOffers::where(array('offer_id'=>$k))->update(['offer_weight'=>$v]);
         }
-        return true;
+        return ['status'=>true];
     }
 }

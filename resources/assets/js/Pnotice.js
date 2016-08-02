@@ -44,7 +44,7 @@ export function show_stack_error(msg, response) {
         opts.stack = stack_bottomright
     } else {
         opts.title = msg;
-        opts.text = response.data.error.message;
+        opts.text = 'error';
         opts.type = "error";
     }
     new PNotify(opts);

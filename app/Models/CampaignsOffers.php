@@ -9,4 +9,6 @@ class CampaignsOffers extends Model
     protected $table = 'mt_offers';
 
     protected $guarded = ['offer_id'];
+
+    public    $timestamps = false;
 }

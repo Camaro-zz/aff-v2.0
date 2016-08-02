@@ -10,6 +10,8 @@ class CampaignsLPs extends Model
 
     protected $guarded = ['lp_id'];
 
+    public    $timestamps = false;
+
     public function camp() {
         return $this->belongsTo('App\Models\Campaigns', 'camp_id', 'camp_id');
     }

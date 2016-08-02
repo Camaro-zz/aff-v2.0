@@ -9,4 +9,6 @@ class CampaignsLead extends Model
     protected $table = 'mt_conversionLog';
 
     protected $guarded = ['id'];
+
+    public    $timestamps = false;
 }

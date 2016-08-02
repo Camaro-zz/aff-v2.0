@@ -58,7 +58,7 @@
                             <td class="col-md-1">{{lp.clicks}}</td>
                             <td class="col-md-1">{{lp.cvrs}}</td>
                             <td class="col-md-1">{{lp.cvr_rate}}</td>
-                            <td class="col-md-1"><input class="i-class-col" v-bind:value="lp.lp_weight">%</td>
+                            <td class="col-md-1"><input class="i-class-col" onkeyup="if(this.value.length==1){this.value = this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" v-model="lp.lp_weight">%</td>
                         </tr>
                     </table>
                 </div>
@@ -99,7 +99,7 @@
                             <td class="col-md-1">{{offer.clicks}}</td>
                             <td class="col-md-1">{{offer.cvrs}}</td>
                             <td class="col-md-1">{{offer.cvr_rate}}</td>
-                            <td class="col-md-1"><input class="i-class-col" v-bind:value="offer.offer_weight">%</td>
+                            <td class="col-md-1"><input class="i-class-col" onkeyup="if(this.value.length==1){this.value = this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"  v-model="offer.offer_weight">%</td>
                         </tr>
                     </table>
                 </div>
@@ -169,13 +169,43 @@ export default {
         },
         updateCampaigns(camp){
             this.$http.put('/camp/edit/' + this.camp_id + '.json', camp).then((response) => {
+                console.log(camp);
                 show_stack_success('保存成功！', response)
             }, function (response){
                 show_stack_error('保存失败！', response)
             });
         },
         updateOffers(offers){
-            console.log(offers);
+            var data = {};
+            $.each(offers,function(n,i){
+               data[i.offer_id] = i.offer_weight;
+            })
+            data = JSON.stringify(data);
+            this.$http.put('/camp/offer.json', data).then((response) => {
+                if(response.data.status == true){
+                    show_stack_success('保存成功！', response)
+                }else{
+                show_stack_error(response.data.msg, response)
+                }
+            }, function (response){
+                show_stack_error('保存失败！', response)
+            });
+        },
+        updateLPs(lps){
+            var data = {};
+            $.each(lps,function(n,i){
+                data[i.lp_id] = i.lp_weight;
+            })
+            data = JSON.stringify(data);
+            this.$http.put('/camp/lp.json', data).then((response) => {
+                if(response.data.status == true){
+                    show_stack_success('保存成功！', response)
+                }else{
+                    show_stack_error(response.data.msg, response)
+                }
+            }, function (response){
+                show_stack_error('保存失败！', response)
+            });
         }
     },
     computed: {
