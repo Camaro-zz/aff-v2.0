@@ -7,7 +7,10 @@ use App\Models\CampaignsLPs;
 use App\Models\CampaignsLead;
 use App\Models\CampaignsOffers;
 use App\Models\CampaignsStat;
+use App\Models\CampaignsLogs;
 use App\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class CampaignsService extends BaseService {
     public function __construct(){
@@ -72,6 +75,7 @@ class CampaignsService extends BaseService {
         $id = $param['camp_id'];
         $update = Campaigns::where('camp_id',$id)->update(['camp_name'=>$title]);
         if($update){
+            $this->log(1);
             return true;
         }else{
             return false;
@@ -191,6 +195,25 @@ class CampaignsService extends BaseService {
         foreach ($param as $k=>$v){
             CampaignsOffers::where(array('offer_id'=>$k))->update(['offer_weight'=>$v]);
         }
+        $this->log(2);
         return ['status'=>true];
+    }
+
+    /**
+     * 记录日志
+     */
+    public function log($type){
+        switch ($type){
+            case 1:
+                $log['memo'] = '修改campaigns名称';
+                break;
+            case 2:
+                $log['memo'] = '修改offer占比';
+                break;
+        }
+        $user = Auth::user()->toArray();
+        $log['uid'] = $user['id'];
+        $log['username'] = $user['username'];
+        CampaignsLogs::create($log);
     }
 }

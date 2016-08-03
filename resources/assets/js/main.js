@@ -33,6 +33,9 @@ router.map({
     '/profile': {
         component: require('./components/Profile.vue')
     },
+    '/setting': {
+        component: require('./components/Setting.vue')
+    },
 })
 
 router.alias({

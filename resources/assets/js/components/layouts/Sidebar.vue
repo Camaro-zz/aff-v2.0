@@ -32,6 +32,7 @@
         </li>-->
         <li><a v-link="{ path: '/campaigns' }"><i class="fa fa-th-list"></i> <span>Campaigns</span></a></li>
         <li><a v-link="{ path: '/users' }"><i class="fa fa-users"></i> <span>Users</span></a></li>
+        <li><a v-link="{ path: '/setting' }"><i class="fa fa-users"></i> <span>Setting</span></a></li>
       </ul>
       <!-- /.sidebar-menu -->
     </section>
