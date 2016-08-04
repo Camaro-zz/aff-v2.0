@@ -40,6 +40,16 @@ make && make install
 
 修改php.ini 新增extension = fileinfo.so
 -------------------------------
+Linux（Ubuntu）下安装NodeJs
+安装nodeJS之前，如果没有安装g++及 libssl-dev，则先要安装好，安装方法如下：
+$ sudo apt-get install g++
+$ sudo apt-get install libssl-dev
+
+$ wget http://nodejs.org/dist/v0.8.16/node-v0.8.16.tar.gz
+$ tar zxvf node-v0.8.16.tar.gz
+$ ./configure
+$ make && make install
+-------------------------------
 composer install
 npm install
 php artisan migrate
