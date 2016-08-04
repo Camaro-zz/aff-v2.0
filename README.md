@@ -46,7 +46,7 @@ $ sudo apt-get install g++
 $ sudo apt-get install libssl-dev
 
 $ wget https://nodejs.org/dist/v4.4.7/node-v4.4.7-linux-x64.tar.xz
-$ tar zxvf node-v4.4.7-linux-x64.tar.xz
+$ tar xvf node-v4.4.7-linux-x64.tar.xz
 $ ./configure
 $ make && make install
 -------------------------------
