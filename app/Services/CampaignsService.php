@@ -169,7 +169,7 @@ class CampaignsService extends BaseService {
             $offer[$k]['cvrs'] = CampaignsClick::where(array('camp_id'=>$camp_id,'offer_id'=>$v['offer_id'],'lp_lead'=>1,'click_lead'=>1))->count();
             //$offer[$k]['views'] = CampaignsClick::where(array('camp_id'=>$camp_id,'offer_id'=>$v['offer_id']))->sum('lp_view');
             if($offer[$k]['clicks'] > 0){
-                $offer[$k]['cvr_rate'] = $offer[$k]['cvrs'] / $offer[$k]['clicks'] * 100;
+                $offer[$k]['cvr_rate'] = round($offer[$k]['cvrs'] / $offer[$k]['clicks'] * 100, 2);
             }else{
                 $offer[$k]['cvr_rate'] = 0;
             }
