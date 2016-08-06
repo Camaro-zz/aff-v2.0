@@ -57,7 +57,7 @@
                             <td class="col-md-1">{{lp.views}}</td>
                             <td class="col-md-1">{{lp.clicks}}</td>
                             <td class="col-md-1">{{lp.cvrs}}</td>
-                            <td class="col-md-1">{{lp.cvr_rate}}</td>
+                            <td class="col-md-1">{{lp.cvr_rate}}%</td>
                             <td class="col-md-1"><input class="i-class-col" onkeyup="if(this.value.length==1){this.value = this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" v-model="lp.lp_weight">%</td>
                         </tr>
                     </table>
@@ -98,7 +98,7 @@
                             <td class="col-md-4">{{offer.offer_url}}</td>
                             <td class="col-md-1">{{offer.clicks}}</td>
                             <td class="col-md-1">{{offer.cvrs}}</td>
-                            <td class="col-md-1">{{offer.cvr_rate}}</td>
+                            <td class="col-md-1">{{offer.cvr_rate}}%</td>
                             <td class="col-md-1"><input class="i-class-col" onkeyup="if(this.value.length==1){this.value = this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"  v-model="offer.offer_weight">%</td>
                         </tr>
                     </table>
