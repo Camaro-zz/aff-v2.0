@@ -118,7 +118,7 @@ class CampaignsService extends BaseService {
             $lps[$k]['cvrs'] = CampaignsClick::where(array('camp_id'=>$camp_id,'lp_id'=>$v['lp_id'],'lp_lead'=>1,'lp_lead'=>1))->count();
             $lps[$k]['views'] = CampaignsClick::where(array('camp_id'=>$camp_id,'lp_id'=>$v['lp_id']))->sum('lp_view');
             if($lps[$k]['clicks'] > 0){
-                $lps[$k]['cvr_rate'] = $lps[$k]['cvrs'] / $lps[$k]['clicks'] * 100;
+                $lps[$k]['cvr_rate'] = round($lps[$k]['cvrs'] / $lps[$k]['clicks'] * 100, 2);
             }else{
                 $lps[$k]['cvr_rate'] = 0;
             }
