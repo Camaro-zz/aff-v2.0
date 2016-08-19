@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use Illuminate\Support\Facades\Response;
 use Validator;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
@@ -31,6 +33,7 @@ class AuthController extends Controller
     protected $redirectTo = '/';
     protected $loginView;
     protected $registerView;
+    protected $username = 'username';
 
     /**
      * Create a new authentication controller instance.
@@ -89,4 +92,5 @@ class AuthController extends Controller
 
         return $user;
     }
+    
 }

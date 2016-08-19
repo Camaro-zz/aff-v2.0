@@ -87,4 +87,7 @@ Route::group(['prefix' => 'camp'], function () {
 
     Route::get('{camp_id}/lp.json', 'Campaigns\CampaignsController@getLP');//根据活动id获取lp内容
     Route::put('lp.json', 'Campaigns\CampaignsController@putLP');//修改LP内容
+
+    Route::get('user_camps/{id}.json', 'Campaigns\CampaignsController@getCampUsers');//获取用户对应的camps
+    Route::post('user_camps/{id}.json', 'Campaigns\CampaignsController@postCampUsers');
 });

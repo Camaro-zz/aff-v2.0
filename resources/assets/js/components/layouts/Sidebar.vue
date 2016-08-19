@@ -31,8 +31,10 @@
           </ul>
         </li>-->
         <li><a v-link="{ path: '/campaigns' }"><i class="fa fa-th-list"></i> <span>Campaigns</span></a></li>
+        <template v-if="user.level == 9">
         <li><a v-link="{ path: '/users' }"><i class="fa fa-users"></i> <span>Users</span></a></li>
         <li><a v-link="{ path: '/setting' }"><i class="fa fa-users"></i> <span>Setting</span></a></li>
+        </template>
       </ul>
       <!-- /.sidebar-menu -->
     </section>
@@ -54,9 +56,7 @@ export default {
     }
   },
   computed: {
-    creatingPost: function () {
-      return this.$route.name === 'editpost'
-    }
+
   },
   methods: {
     fetchUser () {
@@ -64,18 +64,6 @@ export default {
         this.$set('user', response.data)
       })
     },
-    createPost () {
-      if( !this.creatingPost ){
-        this.$http({url: '/api/posts', method: 'POST'}).then(function (response) {
-          show_stack_info('Creating post...', response)
-          this.$router.go('/posts/'  + response.data.hashid + '/edit')
-        }, function (response){
-               show_stack_error('Failed to create post!', response)
-             })
-      } else {
-        swal('Sorry', 'Please navigate elsewhere before creating new post.', 'info')
-      }
-    }
   }
 }
 </script>

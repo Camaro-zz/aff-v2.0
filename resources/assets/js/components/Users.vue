@@ -15,6 +15,7 @@
                   <th>姓名</th>
                   <th>用户名</th>
                   <th>邮箱</th>
+                  <th></th>
                 </tr>
                 <tr v-for="user in users">
                   <td><img class="profile-user-img img-responsive img-circle"
@@ -22,6 +23,11 @@
                   <td>{{user.name}}</td>
                   <td>{{user.username}}</td>
                   <td><span class="label label-success">{{user.email}}</span></td>
+                  <td>
+                      <div class="btn-group">
+                          <a class="btn btn-info" v-link="{ name: 'camp_user', params: {hashid: user.id}}">camp授权设置</a>
+                      </div>
+                  </td>
                 </tr>
               </table>
             </div>

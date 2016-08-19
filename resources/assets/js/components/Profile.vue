@@ -82,9 +82,9 @@ export default {
     updateUser (user) {
       event.preventDefault();
         this.$http.patch('/api/me', user).then(function (response) {
-          show_stack_success('User info updated.', response)
+          show_stack_success('更新成功.', response)
         }, function (response){
-          show_stack_error('Failed to update user info.', response)
+          show_stack_error('更新失败', response)
         })
     },
   },

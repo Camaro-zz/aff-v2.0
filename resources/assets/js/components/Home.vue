@@ -24,6 +24,7 @@
       </div>
       &lt;!&ndash; /.info-box &ndash;&gt;
     </div>-->
+    <template v-if="user.level == 9">
     <div class="col-md-3 col-sm-6 col-xs-12">
       <div class="info-box">
         <span class="info-box-icon bg-purple"><i class="fa fa-users"></i></span>
@@ -36,6 +37,7 @@
       </div>
       <!-- /.info-box -->
     </div>
+    </template>
   </div>
   <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -48,13 +50,15 @@
 <script>
 export default {
   ready () {
-   this.fetchCampaigns()
-   this.fetchUsers()
+    this.fetchCampaigns()
+    this.fetchUsers()
+    this.fetchUser()
   },
   data () {
     return {
       campaigns: [],
       users:[],
+      user:[],
     }
   },
   methods: {
@@ -66,6 +70,11 @@ export default {
     fetchUsers() {
       this.$http({url: '/camp/user_num.json', method: 'GET'}).then(function (response) {
         this.$set('users', response.data)
+      })
+    },
+    fetchUser () {
+      this.$http({url: '/api/me', method: 'GET'}).then(function (response) {
+        this.$set('user', response.data)
       })
     },
   }

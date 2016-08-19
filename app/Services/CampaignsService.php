@@ -8,12 +8,17 @@ use App\Models\CampaignsLead;
 use App\Models\CampaignsOffers;
 use App\Models\CampaignsStat;
 use App\Models\CampaignsLogs;
+use App\Models\CampaignsUsers;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class CampaignsService extends BaseService {
     public function __construct(){
+        $user = Auth::user();
+        $this->uid = $user->id;
+        $this->level = $user->role_level;
+        $this->username = $user->username;
     }
 
     public function getCamp($camp_id){
@@ -29,6 +34,7 @@ class CampaignsService extends BaseService {
     public function getCamps($param){
         $page = isset($param['page']) ? $param['page'] : 1;
         $limit = isset($param['limit']) ? $param['limit'] : 10;
+        $uid = isset($param['uid']) ? $param['uid'] : 0;
         $offset = ($page - 1) * $limit;
         $keywords = isset($param['keywords']) ? trim($param['keywords']) : '';
         $query = Campaigns::leftJoin('mt_temp_stats as stats', 'stats.camp_id','=','mt_campaigns.camp_id')
@@ -42,7 +48,7 @@ class CampaignsService extends BaseService {
         $count = $query->count();
         $query->skip($offset);
         $query->take($limit);
-        $res = $query->get();
+        $res = $query->get()->toArray();
         /*if($res){
             foreach ($res as $k=>$v){
                 $res[$k]['lps'] = '';
@@ -60,10 +66,51 @@ class CampaignsService extends BaseService {
             }
         }*/
         //dd($res);
+        if($uid){
+            $camp_ids = $this->getCampUsers($uid);
+            if($camp_ids){
+                foreach ($res as $k=>$v){
+                    if(in_array($v['camp_id'], $camp_ids)){
+                        $res[$k]['checked'] = 1;
+                    }
+                }
+            }
+            $user = User::where('id',$uid)->select('id','name','username')->first();
+            $data['user'] = $user;
+        }
         $data['data'] = $res;
         $data['count'] = ceil($count/$limit);
         $data['page'] = $page;
         return $data;
+    }
+
+    public function getCampUsers($uid){
+        if(!$uid){
+            return ['status'=>false,'msg'=>'参数错误'];
+        }
+
+        if($this->level != 9 && $uid != $this->uid){//判断权限，只有超级管理员和本人可以查看当前人的camps
+            return ['status'=>false,'msg'=>'无权查看'];
+        }
+        $camps = CampaignsUsers::where(array('uid'=>$uid))->lists('camp_id')->toArray();
+        return $camps;
+    }
+
+    public function postCampUsers($uid,$camp_ids){
+        if($this->level != 9){
+            return ['status'=>false,'msg'=>'无权操作'];
+        }
+        CampaignsUsers::where('uid',$uid)->delete();
+        foreach ($camp_ids as $k=>$v){
+            $create[$k]['uid'] = $uid;
+            $create[$k]['camp_id'] = $v;
+        }
+        $save = CampaignsUsers::insert($create);
+        if($save){
+            return ['status'=>true,'msg'=>'保存成功'];
+        }else{
+            return ['status'=>false,'msg'=>'保存失败'];
+        }
     }
 
     /**
@@ -83,12 +130,16 @@ class CampaignsService extends BaseService {
     }
 
     public function getCampsNum(){
-        $num = Campaigns::count();
+        if($this->level != 9){
+            $num = CampaignsUsers::where(array('uid'=>$this->uid))->count();
+        }else{
+            $num = Campaigns::count();
+        }
         return ['num' => $num];
     }
 
     public function getUsers(){
-        $users = User::select('name','username','email','avatar')->get();
+        $users = User::select('id','name','username','email','avatar')->where('role_level','!=','9')->get();
         $data['data'] = $users;
         return $data;
     }

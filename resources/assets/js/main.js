@@ -20,6 +20,9 @@ router.map({
     '/': {
         component: require('./components/Home.vue')
     },
+    '': {
+        component: require('./components/Home.vue')
+    },
     '/users': {
         component: require('./components/Users.vue')
     },
@@ -35,6 +38,10 @@ router.map({
     },
     '/setting': {
         component: require('./components/Setting.vue')
+    },
+    '/users/camp/:hashid': {
+        name: 'camp_user',
+        component: require('./components/CampUsers.vue')
     },
 })
 

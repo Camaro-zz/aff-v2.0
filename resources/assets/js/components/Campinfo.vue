@@ -169,7 +169,6 @@ export default {
         },
         updateCampaigns(camp){
             this.$http.put('/camp/edit/' + this.camp_id + '.json', camp).then((response) => {
-                console.log(camp);
                 show_stack_success('保存成功！', response)
             }, function (response){
                 show_stack_error('保存失败！', response)

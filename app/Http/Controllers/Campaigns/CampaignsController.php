@@ -60,4 +60,11 @@ class CampaignsController extends Controller {
         $data = $this->campaignsService->putLP($request->all());
         return Response::json($data, 200);
     }
+
+    public function postCampUsers($id, Request $request){
+        $all = $request->all();
+        $ids = $all['camp_ids'];
+        $data = $this->campaignsService->postCampUsers($id, $ids);
+        return Response::json($data, 200);
+    }
 }
