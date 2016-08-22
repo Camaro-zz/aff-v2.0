@@ -177,9 +177,9 @@
             saveUserCamp(){
                 var camp_user = {camp_ids:this.camp_ids};
                 this.$http.post('/camp/user_camps/'+this.uid+'.json', camp_user).then((response) => {
-                    // success callback
+                    show_stack_success('保存成功！', response)
                 }, (response) => {
-                    // error callback
+                    show_stack_error('保存失败！', response)
                 });
             },
         },
