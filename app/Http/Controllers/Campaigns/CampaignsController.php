@@ -67,4 +67,9 @@ class CampaignsController extends Controller {
         $data = $this->campaignsService->postCampUsers($id, $ids);
         return Response::json($data, 200);
     }
+
+    public function getGroupByOption($camp_id){
+        $data = $this->campaignsService->getGroupByOption($camp_id);
+        return Response::json($data, 200);
+    }
 }

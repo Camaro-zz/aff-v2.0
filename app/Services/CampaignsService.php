@@ -101,11 +101,15 @@ class CampaignsService extends BaseService {
             return ['status'=>false,'msg'=>'无权操作'];
         }
         CampaignsUsers::where('uid',$uid)->delete();
-        foreach ($camp_ids as $k=>$v){
-            $create[$k]['uid'] = $uid;
-            $create[$k]['camp_id'] = $v;
+        if(!empty($camp_ids)){
+            foreach ($camp_ids as $k=>$v){
+                $create[$k]['uid'] = $uid;
+                $create[$k]['camp_id'] = $v;
+            }
+            $save = CampaignsUsers::insert($create);
+        }else{
+            $save = 1;
         }
-        $save = CampaignsUsers::insert($create);
         if($save){
             return ['status'=>true,'msg'=>'保存成功'];
         }else{
@@ -208,7 +212,7 @@ class CampaignsService extends BaseService {
             return ['status'=>'false','msg'=>'参数错误'];
         }
 
-        $offer = CampaignsOffers::select('offer_id','offer_name','offer_url','offer_weight')
+        $offer = CampaignsOffers::select('offer_id','offer_name','offer_url','offer_weight','offer_payout')
             ->where('camp_id',$camp_id)
             ->get();
         if(!$offer){
@@ -216,9 +220,11 @@ class CampaignsService extends BaseService {
         }
 
         foreach ($offer as $k=>$v){
+            $offer[$k]['offer_payout'] = round($v['offer_payout'], 2);
             $offer[$k]['clicks'] = CampaignsClick::where(array('camp_id'=>$camp_id,'offer_id'=>$v['offer_id']))->count();
             $offer[$k]['cvrs'] = CampaignsClick::where(array('camp_id'=>$camp_id,'offer_id'=>$v['offer_id'],'lp_lead'=>1,'click_lead'=>1))->count();
             //$offer[$k]['views'] = CampaignsClick::where(array('camp_id'=>$camp_id,'offer_id'=>$v['offer_id']))->sum('lp_view');
+            $offer[$k]['offer_all_payout'] = $offer[$k]['cvrs'] * $v['offer_payout'];
             if($offer[$k]['clicks'] > 0){
                 $offer[$k]['cvr_rate'] = round($offer[$k]['cvrs'] / $offer[$k]['clicks'] * 100, 2);
             }else{
@@ -227,6 +233,21 @@ class CampaignsService extends BaseService {
         }
 
         return $offer;
+    }
+
+
+    public function getGroupByOption($camp_id){
+        if(!$camp_id){
+            return ['status'=>'false','msg'=>'参数错误'];
+        }
+        $camp = Campaigns::where(array('camp_id'=>$camp_id))->select('camp_token1_name as c1','camp_token2_name as c2','camp_token3_name as c3','camp_token4_name as c4','camp_token5_name as c5','camp_token6_name as c6','camp_token7_name as c7','camp_token8_name as c8','camp_token9_name as c9','camp_token10_name as c10')->first()->toArray();
+        $token_names = [];
+        foreach ($camp as $k=>$val){
+            if(empty($val) === FALSE){
+                $token_names['click_'.$k] = $val;
+            }
+        }
+        return $token_names;
     }
 
     /**设置offer占比

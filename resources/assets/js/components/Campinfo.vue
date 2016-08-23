@@ -29,21 +29,21 @@
     <!-- ./row -->
 </section>
 
-<section class="content">
+<!--<section class="content">
     <h1>LPs</h1>
-    <!--<button type="button" @click="createPost" class="btn btn-lg btn-primary btn-flat" style="margin-bottom: 15px;">
+    &lt;!&ndash;<button type="button" @click="createPost" class="btn btn-lg btn-primary btn-flat" style="margin-bottom: 15px;">
       Create Post
-    </button>-->
+    </button>&ndash;&gt;
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
-                <!-- /.box-header -->
+                &lt;!&ndash; /.box-header &ndash;&gt;
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-hover">
                         <tr>
                             <th>LP ID</th>
                             <th>标题</th>
-                            <th>LP链接</>
+                            <th>LP链接</th>
                             <th>展示量</th>
                             <th>点击量</th>
                             <th>转化量</th>
@@ -65,11 +65,18 @@
                 <div class="box-body pad">
                     <button type="button" @click="updateLPs(lps)" class="btn btn-lg btn-primary btn-flat pull-right">保存</button>
                 </div>
-                <!-- /.box-body -->
+                &lt;!&ndash; /.box-body &ndash;&gt;
             </div>
-            <!-- /.box -->
+            &lt;!&ndash; /.box &ndash;&gt;
         </div>
     </div>
+</section>-->
+<section class="content">
+    <select>
+        <template v-for="token in tokens">
+            <option value="{{$index}}">{{token}}</option>
+        </template>
+    </select>
 </section>
 
 <section class="content">
@@ -86,7 +93,9 @@
                         <tr>
                             <th>Offer ID</th>
                             <th>标题</th>
-                            <th>Offer链接</>
+                            <!--<th>Offer链接</>-->
+                            <th>单价</th>
+                            <th>总收入</th>
                             <th>点击量</th>
                             <th>转化量</th>
                             <th>转化率</th>
@@ -95,7 +104,9 @@
                         <tr v-for="offer in offers">
                             <td class="col-md-1">{{offer.offer_id}}</td>
                             <td class="col-md-2">{{offer.offer_name}}</td>
-                            <td class="col-md-4">{{offer.offer_url}}</td>
+                            <!--<td class="col-md-4">{{offer.offer_url}}</td>-->
+                            <td class="col-md-1">{{offer.offer_payout}}</td>
+                            <td class="col-md-1">{{offer.offer_all_payout}}</td>
                             <td class="col-md-1">{{offer.clicks}}</td>
                             <td class="col-md-1">{{offer.cvrs}}</td>
                             <td class="col-md-1">{{offer.cvr_rate}}%</td>
@@ -131,8 +142,9 @@ export default {
     created() {
         this.camp_id = this.$route.params.hashid
         this.fetchOffers()
-        this.fetchLPs()
+        //this.fetchLPs()
         this.fetchCamp()
+        this.fetchTokens()
     },
     components: {
       Dropzone,
@@ -147,8 +159,9 @@ export default {
     data () {
         return {
             camp: [],
-            lps: [],
-            offers: []
+            //lps: [],
+            offers: [],
+            tokens: [],
         }
     },
     methods: {
@@ -162,11 +175,16 @@ export default {
                 this.$set('offers', response.data)
             })
         },
-        fetchLPs () {
+        fetchTokens(){
+            this.$http({url: '/camp/tokens/' + this.camp_id + '.json', method: 'GET'}).then(function (response) {
+                this.$set('tokens', response.data)
+            })
+        },
+        /*fetchLPs () {
             this.$http({url: '/camp/' + this.camp_id + '/lp.json', method: 'GET'}).then(function (response) {
                 this.$set('lps', response.data)
             })
-        },
+        },*/
         updateCampaigns(camp){
             this.$http.put('/camp/edit/' + this.camp_id + '.json', camp).then((response) => {
                 show_stack_success('保存成功！', response)
@@ -190,7 +208,7 @@ export default {
                 show_stack_error('保存失败！', response)
             });
         },
-        updateLPs(lps){
+        /*updateLPs(lps){
             var data = {};
             $.each(lps,function(n,i){
                 data[i.lp_id] = i.lp_weight;
@@ -205,7 +223,7 @@ export default {
             }, function (response){
                 show_stack_error('保存失败！', response)
             });
-        }
+        }*/
     },
     computed: {
       isPublished: function () {

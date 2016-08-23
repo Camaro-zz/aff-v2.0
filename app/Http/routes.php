@@ -90,4 +90,6 @@ Route::group(['prefix' => 'camp'], function () {
 
     Route::get('user_camps/{id}.json', 'Campaigns\CampaignsController@getCampUsers');//获取用户对应的camps
     Route::post('user_camps/{id}.json', 'Campaigns\CampaignsController@postCampUsers');
+
+    Route::get('tokens/{id}.json', 'Campaigns\CampaignsController@getGroupByOption');
 });
