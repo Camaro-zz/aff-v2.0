@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLogsTable extends Migration
+class CreateCampUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,10 @@ class CreateLogsTable extends Migration
      */
     public function up()
     {
-        Schema::create('logs', function (Blueprint $table) {
+        Schema::create('camp_users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('username', 20)->unique();
-            $table->string('uid')->unique();
-            $table->string('memo');
+            $table->integer('uid')->index();
+            $table->integer('camp_id')->index();
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ class CreateLogsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('logs');
+        Schema::drop('camp_users');
     }
 }

@@ -18,7 +18,15 @@
                           <input class="form-control" id="title" placeholder="title" v-model="camp.camp_name">
                         </div>
                       </div>
-                        <button type="button" @click="updateCampaigns(camp)" class="btn btn-lg btn-primary btn-flat pull-right">保存</button>
+
+                    <table class="table table-hover">
+                        <tr>
+                            <td>
+                                <button type="button" @click="updateCampaigns(camp)" class="btn btn-lg btn-primary btn-flat pull-right">保存</button>
+                            </td>
+                        </tr>
+                    </table>
+
                     </div>
                 </div>
             </div>
@@ -112,10 +120,16 @@
                             <td class="col-md-1">{{offer.cvr_rate}}%</td>
                             <td class="col-md-1"><input class="i-class-col" onkeyup="if(this.value.length==1){this.value = this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"  v-model="offer.offer_weight">%</td>
                         </tr>
+
+
                     </table>
-                </div>
-                <div class="box-body pad">
-                    <button type="button" @click="updateOffers(offers)" class="btn btn-lg btn-primary btn-flat pull-right">保存</button>
+                    <table class="table table-hover">
+                        <tr>
+                            <td>
+                                <button type="button" @click="updateOffers(offers)" class="btn btn-lg btn-primary btn-flat pull-right">保存</button>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -125,7 +139,7 @@
 </section>
 
 <section class="content" v-show="token_group_data.length">
-    <h1>Group By </h1>
+    <h1>Group By {{tokens[selectd_token]}}</h1>
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
