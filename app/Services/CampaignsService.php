@@ -11,6 +11,7 @@ use App\Models\CampaignsLogs;
 use App\Models\CampaignsUsers;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class CampaignsService extends BaseService {
@@ -249,6 +250,28 @@ class CampaignsService extends BaseService {
         }
         return $token_names;
     }
+
+    public function getGroupBy($camp_id, $param){
+        $token_id = isset($param['token_id']) ? $param['token_id'] : '';
+        if(!$camp_id || !$token_id){
+            return ['status'=>'false','msg'=>'参数错误'];
+        }
+        //DB::connection()->enableQueryLog();
+        $select = $token_id.' as token,count(camp_id) as clicks,sum(click_lead) as leads, ROUND(click_cpc, 3) as CPC,IFNULL(round((sum(mt_click.click_lead)/sum(mt_click.click_offer))*100,2),0) AS offer_cvr,Sum(mt_click.click_offer) AS lp_clicks,IFNULL(round((sum(mt_click.click_offer)/count(mt_click.click_id))*100,2),0) AS lp_ctr,IFNULL(round((sum(mt_click.click_lead)/count(mt_click.click_id))*100,2),0) AS lp_cvr,Sum(mt_click.lp_view) AS lp_views';
+        $data['data'] = CampaignsClick::select(DB::raw($select))->where(array('camp_id'=>$camp_id,'click_multi'=>0))->groupBy($token_id)->get()->toArray();
+        //$data['']
+        //$data = collect($data)->->toArray();
+        //dd(DB::getQueryLog());
+        //dd($data);
+        return $data;
+        /*$clicks = CampaignsClick::where(array('camp_id'=>14,'click_c3'=>12264790,'lp_view'=>1))->get();
+        $sub = [];
+        foreach ($clicks as $k=>$v){
+            $sub[$v['click_subid']] = $v['click_subid'];
+        }
+        return count(array_unique($sub));*/
+    }
+
 
     /**设置offer占比
      * @param $param['data']    {'id1':'weight1', 'id2':'weight2'}

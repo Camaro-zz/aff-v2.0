@@ -1,5 +1,5 @@
 <template>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<link rel="stylesheet" href="/css/simplemde.min.css">
 <section class="content">
     <h1>Campaign Info</h1>
     <div class="row">
@@ -72,9 +72,9 @@
     </div>
 </section>-->
 <section class="content">
-    <select>
+    <select class="select" v-on:change="selectToken()" v-model='selectd_token'>
         <template v-for="token in tokens">
-            <option value="{{$index}}">{{token}}</option>
+            <option value="{{$key}}">{{token}}</option>
         </template>
     </select>
 </section>
@@ -103,7 +103,7 @@
                         </tr>
                         <tr v-for="offer in offers">
                             <td class="col-md-1">{{offer.offer_id}}</td>
-                            <td class="col-md-2">{{offer.offer_name}}</td>
+                            <td class="col-md-1">{{offer.offer_name}}</td>
                             <!--<td class="col-md-4">{{offer.offer_url}}</td>-->
                             <td class="col-md-1">{{offer.offer_payout}}</td>
                             <td class="col-md-1">{{offer.offer_all_payout}}</td>
@@ -116,6 +116,45 @@
                 </div>
                 <div class="box-body pad">
                     <button type="button" @click="updateOffers(offers)" class="btn btn-lg btn-primary btn-flat pull-right">保存</button>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+    </div>
+</section>
+
+<section class="content" v-show="token_group_data.length">
+    <h1>Group By </h1>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <tr>
+                            <th>{{tokens[selectd_token]}}</th>
+                            <th>Clicks(点击量)</th>
+                            <th>LP Views</th>
+                            <th>LP Clicks</th>
+                            <th>LP CTR</th>
+                            <th>Leads</th>
+                            <th>Offer CVR</th>
+                            <th>LP CVR</th>
+                            <th>CPC</th>
+                        </tr>
+                        <tr v-for="token_data in token_group_data">
+                            <td class="col-md-1">{{token_data.token}}</td>
+                            <td class="col-md-1">{{token_data.clicks}}</td>
+                            <td class="col-md-1">{{token_data.lp_views}}</td>
+                            <td class="col-md-1">{{token_data.lp_clicks}}</td>
+                            <td class="col-md-1">{{token_data.lp_ctr}}</td>
+                            <td class="col-md-1">{{token_data.leads}}</td>
+                            <td class="col-md-1">{{token_data.offer_cvr}}%</td>
+                            <td class="col-md-1">{{token_data.lp_cvr}}%</td>
+                            <td class="col-md-1">{{token_data.CPC}}</td>
+                        </tr>
+                    </table>
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -162,6 +201,8 @@ export default {
             //lps: [],
             offers: [],
             tokens: [],
+            selectd_token: [],
+            token_group_data: [],
         }
     },
     methods: {
@@ -177,7 +218,10 @@ export default {
         },
         fetchTokens(){
             this.$http({url: '/camp/tokens/' + this.camp_id + '.json', method: 'GET'}).then(function (response) {
-                this.$set('tokens', response.data)
+                if(response.data.status != 'false'){
+                    this.$set('tokens', response.data)
+                }
+
             })
         },
         /*fetchLPs () {
@@ -224,6 +268,14 @@ export default {
                 show_stack_error('保存失败！', response)
             });
         }*/
+
+        selectToken(){
+            this.$http({url: '/camp/tokens/info/' + this.camp_id + '.json?token_id='+ this.selectd_token, method: 'GET'}).then(function (response) {
+                if(response.data.status != 'false'){
+                    this.$set('token_group_data', response.data.data)
+                }
+            })
+        },
     },
     computed: {
       isPublished: function () {

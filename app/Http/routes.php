@@ -92,4 +92,5 @@ Route::group(['prefix' => 'camp'], function () {
     Route::post('user_camps/{id}.json', 'Campaigns\CampaignsController@postCampUsers');
 
     Route::get('tokens/{id}.json', 'Campaigns\CampaignsController@getGroupByOption');
+    Route::get('tokens/info/{id}.json', 'Campaigns\CampaignsController@getGroupBy');
 });

@@ -72,4 +72,9 @@ class CampaignsController extends Controller {
         $data = $this->campaignsService->getGroupByOption($camp_id);
         return Response::json($data, 200);
     }
+
+    public function getGroupBy($camp_id, Request $request){
+        $data = $this->campaignsService->getGroupBy($camp_id, $request->all());
+        return Response::json($data, 200);
+    }
 }
