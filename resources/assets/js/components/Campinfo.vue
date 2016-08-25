@@ -81,6 +81,7 @@
 </section>-->
 <section class="content">
     <select class="select" v-on:change="selectToken()" v-model='selectd_token'>
+            <option value='0'>请选择</option>
         <template v-for="token in tokens">
             <option value="{{$key}}">{{token}}</option>
         </template>
@@ -287,6 +288,8 @@ export default {
             this.$http({url: '/camp/tokens/info/' + this.camp_id + '.json?token_id='+ this.selectd_token, method: 'GET'}).then(function (response) {
                 if(response.data.status != 'false'){
                     this.$set('token_group_data', response.data.data)
+                }else{
+                    this.$set('token_group_data', [])
                 }
             })
         },

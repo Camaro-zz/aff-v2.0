@@ -33,7 +33,7 @@ $factory->define(App\Role::class, function (Faker\Generator $faker) {
         'level' => 2,
     ];
 });
-$factory->define(App\Post::class, function (Faker\Generator $faker) {
+/*$factory->define(App\Post::class, function (Faker\Generator $faker) {
     return [
         'title' => $faker->sentence(5),
         'description' => $faker->sentences(2, true),
@@ -47,4 +47,4 @@ $factory->define(App\Category::class, function (Faker\Generator $faker) {
         'name' => $faker->word,
         'icon' => $faker->word,
     ];
-});
+});*/

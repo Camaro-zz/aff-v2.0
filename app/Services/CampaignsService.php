@@ -46,6 +46,12 @@ class CampaignsService extends BaseService {
         if($keywords){
             $query->where('camp_name', 'like', '%' . $keywords . '%');
         }
+
+        if($this->level != 9){//如果当前访问的不是超级管理员
+            $this_camp_ids = $this->getCampUsers($this->uid);
+            $query->whereIn('mt_campaigns.camp_id', $this_camp_ids);
+        }
+
         $count = $query->count();
         $query->skip($offset);
         $query->take($limit);
@@ -306,9 +312,8 @@ class CampaignsService extends BaseService {
                 $log['memo'] = '修改offer占比';
                 break;
         }
-        $user = Auth::user()->toArray();
-        $log['uid'] = $user['id'];
-        $log['username'] = $user['username'];
+        $log['uid'] = $this->uid;
+        $log['username'] = $this->username;
         CampaignsLogs::create($log);
     }
 }

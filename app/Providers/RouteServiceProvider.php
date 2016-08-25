@@ -2,9 +2,8 @@
 
 namespace App\Providers;
 
-use App\Category;
+
 use App\Exceptions\ApiModelNotFoundException;
-use App\Post;
 use ErrorException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Routing\Router;

@@ -17,10 +17,18 @@
               <th>ID</th>
               <th>标题</th>
               <th>状态</th>
-              <th>总点击量</th>
-              <th>总转化量</th>
-              <th>LP展示量</th>
-              <th>LP点击量</th>
+              <th>Clicks(总点击量)</th>
+              <th>LP Views(LP展示量)</th>
+              <th>LP Click(LP点击量)</th>
+              <th>LP CTR(LP点击率)</th>
+              <th>Leads(转化)</th>
+              <th>CVR(转化率)</th>
+              <th>CPC</th>
+              <th>EPC</th>
+              <th>Rev.</th>
+              <th>Spend</th>
+              <th>P/L</th>
+              <th>ROI</th>
               <th>操作</th>
             </tr>
             <tr v-for="camp in list">
@@ -31,9 +39,31 @@
                   <b v-else class="label label-danger">禁用</b>
               </td>
               <td class="col-md-1">{{camp.clicks}}</td>
-              <td class="col-md-1">{{camp.leads}}</td>
               <td class="col-md-1">{{camp.lpviews}}</td>
               <td class="col-md-1">{{camp.lpclicks}}</td>
+              <td class="col-md-1">{{camp.ctr.toFixed(2)}}%</td>
+              <td class="col-md-1">{{camp.leads}}</td>
+              <td class="col-md-1">{{camp.cvr.toFixed(2)}}%</td>
+              <td class="col-md-1">{{camp.cpc.toFixed(3)}}</td>
+              <td class="col-md-1">{{camp.epc.toFixed(3)}}</td>
+              <td class="col-md-1">${{camp.rev.toFixed(2)}}</td>
+              <td class="col-md-1">${{camp.cost.toFixed(2)}}</td>
+              <td class="col-md-1">
+                <template v-if="camp.profit > 0">
+                  <b style="color:green;">${{camp.profit.toFixed(2)}}</b>
+                </template>
+                <template v-else>
+                  <b style="color:red;">${{-camp.profit.toFixed(2)}}</b>
+                </template>
+              </td>
+              <td class="col-md-1">
+                <template v-if="camp.roi > 0">
+                  <b style="color:green;">{{camp.roi.toFixed(1)}}%</b>
+                </template>
+                <template v-else>
+                  <b style="color:red;">{{camp.roi.toFixed(1)}}%</b>
+                </template>
+              </td>
               <td class="col-md-3">
                 <div class="btn-group">
                   <a class="btn btn-info" v-link="{ name: 'campaigns', params: {hashid: camp.camp_id}}">详情</a>
