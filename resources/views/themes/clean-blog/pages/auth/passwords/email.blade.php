@@ -46,7 +46,7 @@
         <div class="row">
             <div class="form-group col-xs-12">
                 <button type="submit" class="btn btn-default">
-                  <i class="fa fa-btn fa-envelope"></i> Send New Password
+                  <i class="fa fa-btn fa-envelope"></i> 发送重置邮件
                 </button>
             </div>
         </div>

@@ -20,6 +20,7 @@ Route::group(['middleware' => 'web'], function () {
     //homepage
     Route::get('/', ['as' => 'web.home', 'uses' => 'PagesController@home']);
     Route::get('blog', ['as' => 'web.blog', 'uses' => 'PagesController@home']);
+    Route::get('home', ['as' => 'web.home', 'uses' => 'PagesController@home']);
 //    Route::get('/blog/{posts}', ['as' => 'web.post', 'uses' => 'PagesController@post']);
 //    Route::get('/category/{categories}', ['as' => 'web.category', 'uses' => 'PagesController@category']);
 
@@ -49,6 +50,7 @@ Route::group(['prefix' => 'api', 'middleware' => 'api', 'namespace' => 'Api'], f
     //users
     Route::get('me', ['as' => 'api.me.show', 'uses' => 'MeController@show']);
     Route::patch('me', ['as' => 'api.me.update', 'uses' => 'MeController@update']);
+    Route::patch('pass', ['as' => 'api.me.pass', 'uses' => 'MeController@updatePass']);
     Route::put('me', ['as' => 'api.me.update', 'uses' => 'MeController@update']);
 });
 

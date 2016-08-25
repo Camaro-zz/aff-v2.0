@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Transformers\UserTransformer;
 use Hash;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 
 class MeController extends ApiController
@@ -46,26 +46,44 @@ class MeController extends ApiController
      */
     public function update(Request $request)
     {
+
+        $this->validate($request, [
+            'email' => 'email|max:255|unique:users,email,'.$this->user->id,
+        ]);
+
+        $this->user->fill($request->all());
+
+
+        $this->user->save();
+
+        return $this->respondWith($this->user, new UserTransformer);
+    }
+
+
+    /**修改密码
+     * @param Request $request
+     * @return \Response
+     *
+     */
+    public function updatePass(Request $request)
+    {
         //check that user has provided his current password
         if($request->has('password') && Hash::check($request->get('password'), $this->user->password)){
             $this->validate($request, [
-                'email' => 'email|max:255|unique:users,email,'.$this->user->id,
-                'username' => 'max:50|unique:users,username,'.$this->user->id,
-                'name' => 'max:255',
                 'new_password' => 'min:6|confirmed'
             ]);
 
             $this->user->fill($request->all());
-            
+
             if($request->get('new_password')){
                 $this->user->password = bcrypt($request->get('new_password'));
             }
-            
-            $this->user->save();
 
+            $this->user->save();
+            Auth::logout();
             return $this->respondWith($this->user, new UserTransformer);
         } else {
-            return $this->errorUnauthorized('Invalid current password.');
+            return $this->errorUnauthorized('请填写密码.');
         }
     }
 }

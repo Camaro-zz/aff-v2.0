@@ -30,7 +30,7 @@ class PasswordController extends Controller
     public function __construct()
     {
         $this->middleware($this->guestMiddleware());
-        $this->linkRequestView = config('theme.default.pages').'.auth.passwords.email';;
-        $this->resetView = config('theme.default.pages').'.auth.passwords.reset';;
+        $this->linkRequestView = config('theme.default.pages').'.auth.passwords.email';
+        $this->resetView = config('theme.default.pages').'.auth.passwords.reset';
     }
 }

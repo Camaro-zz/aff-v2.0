@@ -2,50 +2,48 @@
 <!-- general form elements -->
     <div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title">Edit profile</h3>
+        <h3 class="box-title">个人设置</h3>
       </div>
       <!-- /.box-header -->
       <!-- form start -->
+
       <form role="form">
         <div class="box-body">
           <img class="profile-user-img img-responsive img-circle"
-          :src="user.avatar" alt="User profile picture">
-          <div class="form-group">
-            <label for="name">姓名:</label>
-            <input v-model="user.name" class="form-control" name="name" placeholder="name">
-          </div>
-          <div class="form-group">
-            <label for="Username">用户名:</label>
-            <input v-model="user.username" class="form-control" name="Username" placeholder="Username">
-          </div>
+               :src="user.avatar" alt="User profile picture">
           <div class="form-group">
             <label for="Email">邮箱:</label>
-            <input v-model="user.email" type="email" class="form-control" name="Email" placeholder="Enter email">
+            <input v-model="user.email" type="email" class="form-control" name="Email" placeholder="Enter email" disabled="true">
           </div>
           <div class="form-group">
             <label for="gravatar">头像:</label>
             <input v-model="user.avatar" class="form-control disabled" name="gravatar" placeholder="Avatar" disabled="true">
           </div>
-          <div class="form-group">
-            <label for="biography">简介:</label>
-            <textarea v-model="user.bio" class="form-control" name="bio" rows="5" id="biography"></textarea>
-          </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+          <button @click="updateUser(user)" class="btn btn-primary btn-lg btn-flat">提交</button>
+        </div>
+      </form>
+      <div class="box-footer"></div>
+      <form role="form">
+        <div class="box-body">
           <div class="form-group">
             <label for="password">旧密码:</label>
-            <input v-model="user.password" type="password" class="form-control" name="password" placeholder="Password">
+            <input v-model="auth.password" type="password" class="form-control" name="password" placeholder="Password">
           </div>
           <div class="form-group">
             <label for="new_password">新密码:</label>
-            <input v-model="user.new_password" type="password" class="form-control" name="new_password" placeholder="New Password">
+            <input v-model="auth.new_password" type="password" class="form-control" name="new_password" placeholder="New Password">
           </div>
           <div class="form-group">
             <label for="new_password_confirmation">确认新密码:</label>
-            <input v-model="user.new_password_confirmation" type="password" class="form-control" name="new_password_confirmation" placeholder="Confirm Password">
+            <input v-model="auth.new_password_confirmation" type="password" class="form-control" name="new_password_confirmation" placeholder="Confirm Password">
           </div>
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-          <button @click="updateUser(user)" class="btn btn-primary btn-lg btn-flat">Submit</button>
+          <button @click="updatePass(auth)" class="btn btn-primary btn-lg btn-flat">提交</button>
         </div>
       </form>
     </div>
@@ -65,12 +63,13 @@ export default {
         name: '',
         username: '',
         email: '',
+        avatar: '',
+      },
+      auth: {
         password: '',
         new_password: '',
         new_password_confirmation: '',
-        avatar: '',
-        bio: ''
-      }
+      },
     }
   },
   methods: {
@@ -86,6 +85,15 @@ export default {
         }, function (response){
           show_stack_error('更新失败', response)
         })
+    },
+    updatePass (auth) {
+      event.preventDefault();
+      this.$http.patch('/api/pass', auth).then(function (response) {
+        show_stack_success('修改密码成功.', response);
+        setTimeout("self.location.reload();", 800);
+      }, function (response){
+        show_stack_error('修改密码失败', response)
+      })
     },
   },
 }
