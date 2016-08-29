@@ -36,7 +36,8 @@ class UserTransformer extends TransformerAbstract
             'avatar'   => $user->avatar,
             'email'    => $user->email,
             'bio'      => $user->bio,
-            'level'    => $user->role_level
+            'level'    => $user->role_level,
+            'timezone' => $user->user_timezone
         ];
     }
 

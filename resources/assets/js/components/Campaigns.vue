@@ -8,7 +8,50 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">All Campaigns</h3>
+          <h3 class="box-title">
+
+            时间选项：
+            <select name="date_type">
+              <option value="0">所有时间</option>
+              <option value="1">今天</option>
+              <option value="2">昨天</option>
+              <option value="3">本周</option>
+              <option value="4">上周</option>
+              <option value="5">本月</option>
+              <option value="6">上月</option>
+              <option value="7">本年</option>
+              <option value="8">去年</option>
+            </select>
+
+
+            时区选项：
+            <select name="timezone">
+              <option value="">东西12时区</option>
+              <option value="">西11时区</option>
+              <option value="">西10时区</option>
+              <option value="">西9时区</option>
+              <option value="">西8时区</option>
+              <option value="">西7时区</option>
+              <option value="">西6时区</option>
+              <option value="">西5时区</option>
+              <option value="">西4时区</option>
+              <option value="">西3时区</option>
+              <option value="">西2时区</option>
+              <option value="">西1时区</option>
+              <option value="">0时区</option>
+              <option value="">东1时区</option>
+              <option value="">东2时区</option>
+              <option value="">东3时区</option>
+              <option value="">东4时区</option>
+              <option value="">东5时区</option>
+              <option value="">东6时区</option>
+              <option value="">东7时区</option>
+              <option value="">东8时区</option>
+              <option value="">东9时区</option>
+              <option value="">东10时区</option>
+              <option value="">东11时区</option>
+            </select>
+          </h3>
         </div>
         <!-- /.box-header -->
         <div class="box-body table-responsive no-padding">

@@ -10,6 +10,7 @@ use App\Models\CampaignsStat;
 use App\Models\CampaignsLogs;
 use App\Models\CampaignsUsers;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -31,21 +32,25 @@ class CampaignsService extends BaseService {
      * @param $param['keyword']  关键词查询
      * @param $param['offset']     页号
      * @param $param['limit']    查询数目
+     * @param $param['date_type']    按时间查看类型  0所有时间，1今天，2昨天，3前7天，4前14天，5这个月，6上个月，7今年，8上年，9自定义
+     * @param $param['timezone']    按时区查看
      */
     public function getCamps($param){
         $page = isset($param['page']) ? $param['page'] : 1;
         $limit = isset($param['limit']) ? $param['limit'] : 10;
         $uid = isset($param['uid']) ? $param['uid'] : 0;
+        $date_type = isset($param['date_type']) ? intval($param['date_type']) : 0;
+        $timezone = isset($param['timezone']) ? intval($param['date_type']) : '';
         $offset = ($page - 1) * $limit;
-        $keywords = isset($param['keywords']) ? trim($param['keywords']) : '';
+        //$keywords = isset($param['keywords']) ? trim($param['keywords']) : '';
         $query = Campaigns::leftJoin('mt_temp_stats as stats', 'stats.camp_id','=','mt_campaigns.camp_id')
                           ->select('mt_campaigns.camp_status','mt_campaigns.camp_name','mt_campaigns.camp_cpc','stats.*','mt_campaigns.camp_id')
                           ->orderBy('mt_campaigns.camp_id','DESC')
                           ->orderBy('mt_campaigns.camp_status','DESC');
 
-        if($keywords){
+        /*if($keywords){
             $query->where('camp_name', 'like', '%' . $keywords . '%');
-        }
+        }*/
 
         if($this->level != 9){//如果当前访问的不是超级管理员
             $this_camp_ids = $this->getCampUsers($this->uid);
@@ -56,6 +61,42 @@ class CampaignsService extends BaseService {
         $query->skip($offset);
         $query->take($limit);
         $res = $query->get()->toArray();
+
+        if($timezone){
+            date_default_timezone_set('Etc/GMT-8');
+        }
+        if($date_type){DB::connection()->enableQueryLog();
+            $select = 'count(click.camp_id) as clicks,sum(click.click_lead) as leads, ROUND(click.click_cpc, 3) as CPC,IFNULL(round((sum(click.click_lead)/sum(click.click_offer))*100,2),0) AS offer_cvr,Sum(click.click_offer) AS lpclicks,IFNULL(round((sum(click.click_offer)/count(click.click_id))*100,2),0) AS lp_ctr,IFNULL(round((sum(click.click_lead)/count(click.click_id))*100,2),0) AS lp_cvr,Sum(click.lp_view) AS lpviews';
+            $query = Campaigns::leftJoin('mt_click as click', 'click.camp_id', '=', 'mt_campaigns.camp_id')
+                              ->select('mt_campaigns.camp_status','mt_campaigns.camp_name','mt_campaigns.camp_cpc','mt_campaigns.camp_id',DB::raw($select))
+                              ->orderBy('mt_campaigns.camp_id','DESC')
+                              ->orderBy('mt_campaigns.camp_status','DESC');
+            $carbon = new Carbon();
+            switch ($date_type){
+                case 1:     //今天
+                    $today_start = strtotime($carbon->startOfDay());
+                    $today_end = strtotime($carbon->endOfDay());
+                    $query->whereBetween('click.click_time',[$today_start,$today_end]);
+                    break;
+                case 2:     //昨天
+                    break;
+                case 3:     //本周
+                    break;
+                case 4:     //上周
+                    break;
+                case 5:     //本月
+                    break;
+                case 6:     //上月
+                    break;
+                case 7:     //本年
+                    break;
+                case 8:     //去年
+                    break;
+            }
+            $query->where(array('click.click_multi'=>0));
+        }
+        /*print_r(DB::getQueryLog());
+        die();*/
         /*if($res){
             foreach ($res as $k=>$v){
                 $res[$k]['lps'] = '';
@@ -72,7 +113,6 @@ class CampaignsService extends BaseService {
                 }
             }
         }*/
-        //dd($res);
         if($uid){
             $camp_ids = $this->getCampUsers($uid);
             if($camp_ids){
@@ -150,12 +190,21 @@ class CampaignsService extends BaseService {
     }
 
     public function getUsers(){
+        date_default_timezone_set('Etc/GMT-8');
+        $carbon = new Carbon();
+        dd(strtotime($carbon->yesterday()));
+        if($this->level != 9){
+            return ['status'=>true,'msg'=>'没有权限'];
+        }
         $users = User::select('id','name','username','email','avatar')->where('role_level','!=','9')->get();
         $data['data'] = $users;
         return $data;
     }
 
     public function getUsersNum(){
+        if($this->level != 9){
+            return ['status'=>true,'msg'=>'没有权限'];
+        }
         $num = User::count();
         return ['num' => $num];
     }
@@ -218,10 +267,11 @@ class CampaignsService extends BaseService {
         if(!$camp_id){
             return ['status'=>'false','msg'=>'参数错误'];
         }
+        //$date_type =
 
         $offer = CampaignsOffers::select('offer_id','offer_name','offer_url','offer_weight','offer_payout')
-            ->where('camp_id',$camp_id)
-            ->get();
+                                ->where('camp_id',$camp_id)
+                                ->get();
         if(!$offer){
             return ['status'=>false,'msg'=>'该活动下没有offer'];
         }
@@ -238,7 +288,7 @@ class CampaignsService extends BaseService {
                 $offer[$k]['cvr_rate'] = 0;
             }
         }
-
+        //先计算出选中时区，一天之内的时间戳，比如选择today 选择-4时区，那就是计算-4时区今天之内的时间戳，然后根据时间戳筛选
         return $offer;
     }
 
