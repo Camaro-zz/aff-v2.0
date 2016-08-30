@@ -11,7 +11,7 @@
           <h3 class="box-title">
 
             时间选项：
-            <select name="date_type">
+            <select name="date_type" v-model="date_type" v-on:change="fetchCampaigns()">
               <option value="0">所有时间</option>
               <option value="1">今天</option>
               <option value="2">昨天</option>
@@ -25,31 +25,31 @@
 
 
             时区选项：
-            <select name="timezone">
-              <option value="">东西12时区</option>
-              <option value="">西11时区</option>
-              <option value="">西10时区</option>
-              <option value="">西9时区</option>
-              <option value="">西8时区</option>
-              <option value="">西7时区</option>
-              <option value="">西6时区</option>
-              <option value="">西5时区</option>
-              <option value="">西4时区</option>
-              <option value="">西3时区</option>
-              <option value="">西2时区</option>
-              <option value="">西1时区</option>
-              <option value="">0时区</option>
-              <option value="">东1时区</option>
-              <option value="">东2时区</option>
-              <option value="">东3时区</option>
-              <option value="">东4时区</option>
-              <option value="">东5时区</option>
-              <option value="">东6时区</option>
-              <option value="">东7时区</option>
-              <option value="">东8时区</option>
-              <option value="">东9时区</option>
-              <option value="">东10时区</option>
-              <option value="">东11时区</option>
+            <select name="timezone" v-model="timezone" v-on:change="fetchCampaigns()">
+              <option value="12">东西12时区</option>
+              <option value="11">西11时区</option>
+              <option value="10">西10时区</option>
+              <option value="9">西9时区</option>
+              <option value="8">西8时区</option>
+              <option value="7">西7时区</option>
+              <option value="6">西6时区</option>
+              <option value="5">西5时区</option>
+              <option value="4">西4时区</option>
+              <option value="3">西3时区</option>
+              <option value="2">西2时区</option>
+              <option value="1">西1时区</option>
+              <option value="0">0时区</option>
+              <option value="-1">东1时区</option>
+              <option value="-2">东2时区</option>
+              <option value="-3">东3时区</option>
+              <option value="-4">东4时区</option>
+              <option value="-5">东5时区</option>
+              <option value="-6">东6时区</option>
+              <option value="-7">东7时区</option>
+              <option value="-8">东8时区</option>
+              <option value="-9">东9时区</option>
+              <option value="-10">东10时区</option>
+              <option value="-11">东11时区</option>
             </select>
           </h3>
         </div>
@@ -84,27 +84,27 @@
               <td class="col-md-1">{{camp.clicks}}</td>
               <td class="col-md-1">{{camp.lpviews}}</td>
               <td class="col-md-1">{{camp.lpclicks}}</td>
-              <td class="col-md-1">{{camp.ctr.toFixed(2)}}%</td>
+              <td class="col-md-1">{{camp.ctr}}%</td>
               <td class="col-md-1">{{camp.leads}}</td>
-              <td class="col-md-1">{{camp.cvr.toFixed(2)}}%</td>
-              <td class="col-md-1">{{camp.cpc.toFixed(3)}}</td>
-              <td class="col-md-1">{{camp.epc.toFixed(3)}}</td>
-              <td class="col-md-1">${{camp.rev.toFixed(2)}}</td>
-              <td class="col-md-1">${{camp.cost.toFixed(2)}}</td>
+              <td class="col-md-1">{{camp.cvr}}%</td>
+              <td class="col-md-1">{{camp.cpc}}</td>
+              <td class="col-md-1">{{camp.epc}}</td>
+              <td class="col-md-1">${{camp.rev}}</td>
+              <td class="col-md-1">${{camp.cost}}</td>
               <td class="col-md-1">
                 <template v-if="camp.profit > 0">
-                  <b style="color:green;">${{camp.profit.toFixed(2)}}</b>
+                  <b style="color:green;">${{camp.profit}}</b>
                 </template>
                 <template v-else>
-                  <b style="color:red;">${{-camp.profit.toFixed(2)}}</b>
+                  <b style="color:red;">${{-camp.profit}}</b>
                 </template>
               </td>
               <td class="col-md-1">
                 <template v-if="camp.roi > 0">
-                  <b style="color:green;">{{camp.roi.toFixed(1)}}%</b>
+                  <b style="color:green;">{{camp.roi}}%</b>
                 </template>
                 <template v-else>
-                  <b style="color:red;">{{camp.roi.toFixed(1)}}%</b>
+                  <b style="color:red;">{{camp.roi}}%</b>
                 </template>
               </td>
               <td class="col-md-3">
@@ -188,16 +188,22 @@ export default {
     Multiselect
   },
   ready () {
-   this.fetchCampaigns(1)
+   this.fetchCampaigns()
   },
   data () {
     return {
       list: [],
+      timezone: -8,
+      date_type: 0,
+      cur: 1,
     }
   },
   methods: {
-    fetchCampaigns (page) {
-      this.$http({url: '/camp/list.json?page='+page, method: 'GET'}).then(function (response) {
+    fetchCampaigns () {
+      var date_type = this.date_type;
+      var timezone  = this.timezone;
+      var page = this.cur ? this.cur : 1;
+      this.$http({url: '/camp/list.json?page='+page+'&date_type='+date_type+'&timezone='+timezone, method: 'GET'}).then(function (response) {
         this.$set('list', response.data.data)
         this.$set('all', response.data.count)
         this.$set('cur', response.data.page)
@@ -207,7 +213,7 @@ export default {
       if(data != this.cur){
         this.cur = data
         this.$dispatch('btn-click',data)
-        this.fetchCampaigns(data)
+        this.fetchCampaigns()
       }
     },
     goPage(type){
@@ -220,7 +226,7 @@ export default {
           this.cur--
         }
       }
-      this.fetchCampaigns(this.cur)
+      this.fetchCampaigns()
     }
   },
   computed: {

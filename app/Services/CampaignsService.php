@@ -43,10 +43,9 @@ class CampaignsService extends BaseService {
         $timezone = isset($param['timezone']) ? intval($param['date_type']) : '';
         $offset = ($page - 1) * $limit;
         //$keywords = isset($param['keywords']) ? trim($param['keywords']) : '';
-        $query = Campaigns::leftJoin('mt_temp_stats as stats', 'stats.camp_id','=','mt_campaigns.camp_id')
-                          ->select('mt_campaigns.camp_status','mt_campaigns.camp_name','mt_campaigns.camp_cpc','stats.*','mt_campaigns.camp_id')
-                          ->orderBy('mt_campaigns.camp_id','DESC')
-                          ->orderBy('mt_campaigns.camp_status','DESC');
+        $query = Campaigns::select('camp_status','camp_name','camp_cpc','camp_id')
+                          ->orderBy('camp_id','DESC')
+                          ->orderBy('camp_status','DESC');
 
         /*if($keywords){
             $query->where('camp_name', 'like', '%' . $keywords . '%');
@@ -62,57 +61,67 @@ class CampaignsService extends BaseService {
         $query->take($limit);
         $res = $query->get()->toArray();
 
+        foreach ($res as $k=>$v){
+            $camp_ids[] = $v['camp_id'];
+            $camps[$v['camp_id']] = $v;
+        }
         if($timezone){
-            date_default_timezone_set('Etc/GMT-8');
+            date_default_timezone_set('Etc/GMT'.$timezone);
         }
-        if($date_type){DB::connection()->enableQueryLog();
-            $select = 'count(click.camp_id) as clicks,sum(click.click_lead) as leads, ROUND(click.click_cpc, 3) as CPC,IFNULL(round((sum(click.click_lead)/sum(click.click_offer))*100,2),0) AS offer_cvr,Sum(click.click_offer) AS lpclicks,IFNULL(round((sum(click.click_offer)/count(click.click_id))*100,2),0) AS lp_ctr,IFNULL(round((sum(click.click_lead)/count(click.click_id))*100,2),0) AS lp_cvr,Sum(click.lp_view) AS lpviews';
-            $query = Campaigns::leftJoin('mt_click as click', 'click.camp_id', '=', 'mt_campaigns.camp_id')
-                              ->select('mt_campaigns.camp_status','mt_campaigns.camp_name','mt_campaigns.camp_cpc','mt_campaigns.camp_id',DB::raw($select))
-                              ->orderBy('mt_campaigns.camp_id','DESC')
-                              ->orderBy('mt_campaigns.camp_status','DESC');
-            $carbon = new Carbon();
-            switch ($date_type){
-                case 1:     //今天
-                    $today_start = strtotime($carbon->startOfDay());
-                    $today_end = strtotime($carbon->endOfDay());
-                    $query->whereBetween('click.click_time',[$today_start,$today_end]);
-                    break;
-                case 2:     //昨天
-                    break;
-                case 3:     //本周
-                    break;
-                case 4:     //上周
-                    break;
-                case 5:     //本月
-                    break;
-                case 6:     //上月
-                    break;
-                case 7:     //本年
-                    break;
-                case 8:     //去年
-                    break;
-            }
-            $query->where(array('click.click_multi'=>0));
+        $timestamp = $this->getTimestamp($date_type);
+        $start_timestamp = $timestamp['start'];
+        $end_timestamp = $timestamp['end'];
+        $select = 'camp_id, (count(click_id)-sum(click_multi)) as clicks,sum(click_lead) as leads, ROUND(click_cpc, 3) as cpc,IFNULL(round((sum(click_lead)/sum(click_offer))*100,2),0) AS offer_cvr,Sum(click_offer) AS lpclicks,IFNULL(round((sum(click_offer)/count(click_id))*100,2),0) AS ctr,IFNULL(round((sum(click_lead)/count(click_id))*100,2),0) AS cvr,Sum(lp_view) AS lpviews,click_leadvalue';
+        $new_query = CampaignsClick::select(DB::raw($select))
+            ->whereIn('camp_id',$camp_ids)
+            ->whereBetween('click_time',[$start_timestamp,$end_timestamp])
+            ->groupBy('camp_id')
+            ->orderBy('camp_id','DESC')
+            ->get()->toArray();
+        foreach ($new_query as $k=>$v){
+            $new_query[$k]['cost'] = round($v['cpc'] * $v['clicks'], 2);
+            $new_query[$k]['rev'] = round($v['leads'] * $v['click_leadvalue'], 2);
+            $new_query[$k]['profit'] = round($new_query[$k]['rev'] - $new_query[$k]['cost'], 2);
+            $new_query[$k]['roi'] = $new_query[$k]['cost'] == 0 ? 0 : round($new_query[$k]['profit'] / $new_query[$k]['cost'] * 100, 1);
         }
-        /*print_r(DB::getQueryLog());
-        die();*/
-        /*if($res){
-            foreach ($res as $k=>$v){
-                $res[$k]['lps'] = '';
-                $lps = CampaignsLPs::where('camp_id',$v['camp_id'])->select('lp_id','lp_name','lp_url','lp_weight')->get();
-                if($lps){
-                    $res[$k]['lps'] =  $lps->toArray();
-                    foreach ($lps as $key=>$val){
-                        $res[$k]['lps'][$key]['leads'] = CampaignsLead::where('')
+        foreach ($res as $k=>$v){
+            if($new_query){
+                foreach ($new_query as $key=>$val){
+                    if($v['camp_id'] == $val['camp_id']){
+                        $res[$k] = array_merge($v,$val);
+                        break;
+                    }else{
+                        $res[$k]['clicks'] = 0;
+                        $res[$k]['leads'] = 0;
+                        $res[$k]['cpc'] = 0;
+                        $res[$k]['epc'] = 0;
+                        $res[$k]['offer_cvr'] = 0;
+                        $res[$k]['lpclicks'] = 0;
+                        $res[$k]['ctr'] = 0;
+                        $res[$k]['cvr'] = 0;
+                        $res[$k]['lpviews'] = 0;
+                        $res[$k]['cost'] = 0;
+                        $res[$k]['rev'] = 0;
+                        $res[$k]['profit'] = 0;
+                        $res[$k]['roi'] = 0;
                     }
-            }
-                $offers = CampaignsOffers::where('camp_id',$v['camp_id'])->select('offer_id','offer_name','offer_url','offer_payout','offer_weight')->get();
-                if($offers){
-                    $res[$k]['offers'] =  $offers->toArray();
                 }
+            }else{
+                $res[$k]['clicks'] = 0;
+                $res[$k]['leads'] = 0;
+                $res[$k]['cpc'] = 0;
+                $res[$k]['epc'] = 0;
+                $res[$k]['offer_cvr'] = 0;
+                $res[$k]['lpclicks'] = 0;
+                $res[$k]['ctr'] = 0;
+                $res[$k]['cvr'] = 0;
+                $res[$k]['lpviews'] = 0;
+                $res[$k]['cost'] = 0;
+                $res[$k]['rev'] = 0;
+                $res[$k]['profit'] = 0;
+                $res[$k]['roi'] = 0;
             }
-        }*/
+        }
         if($uid){
             $camp_ids = $this->getCampUsers($uid);
             if($camp_ids){
@@ -190,9 +199,11 @@ class CampaignsService extends BaseService {
     }
 
     public function getUsers(){
-        date_default_timezone_set('Etc/GMT-8');
+        /*date_default_timezone_set('Etc/GMT-8');
         $carbon = new Carbon();
-        dd(strtotime($carbon->yesterday()));
+        $start_timestamp = mktime(0,0,0,1,1,date('Y')-1);
+        $end_timestamp   = mktime(23,59,59,12,date('t'),date('Y')-1);
+        dd($end_timestamp);*/
         if($this->level != 9){
             return ['status'=>true,'msg'=>'没有权限'];
         }
@@ -263,11 +274,12 @@ class CampaignsService extends BaseService {
      * @param $camp_id
      * @return array|bool
      */
-    public function getOffer($camp_id){
+    public function getOffer($camp_id,$param){
         if(!$camp_id){
             return ['status'=>'false','msg'=>'参数错误'];
         }
-        //$date_type =
+        $date_type = isset($param['date_type']) ? intval($param['date_type']) : 0;
+        $timezone = isset($param['timezone']) ? $param['timezone'] : '';
 
         $offer = CampaignsOffers::select('offer_id','offer_name','offer_url','offer_weight','offer_payout')
                                 ->where('camp_id',$camp_id)
@@ -275,11 +287,24 @@ class CampaignsService extends BaseService {
         if(!$offer){
             return ['status'=>false,'msg'=>'该活动下没有offer'];
         }
+        
+        $timestamp = $this->getTimestamp($date_type);
+        $start_timestamp = $timestamp['start'];
+        $end_timestamp = $timestamp['end'];
 
+        if($timezone){
+            date_default_timezone_set('Etc/GMT'.$timezone);
+        }
+
+        //先计算出选中时区，一天之内的时间戳，比如选择today 选择-4时区，那就是计算-4时区今天之内的时间戳，然后根据时间戳筛选
         foreach ($offer as $k=>$v){
             $offer[$k]['offer_payout'] = round($v['offer_payout'], 2);
-            $offer[$k]['clicks'] = CampaignsClick::where(array('camp_id'=>$camp_id,'offer_id'=>$v['offer_id']))->count();
-            $offer[$k]['cvrs'] = CampaignsClick::where(array('camp_id'=>$camp_id,'offer_id'=>$v['offer_id'],'lp_lead'=>1,'click_lead'=>1))->count();
+            $offer[$k]['clicks'] = CampaignsClick::where(array('camp_id'=>$camp_id,'offer_id'=>$v['offer_id']))
+                                                 ->whereBetween('click_time',[$start_timestamp,$end_timestamp])
+                                                 ->count();
+            $offer[$k]['cvrs'] = CampaignsClick::where(array('camp_id'=>$camp_id,'offer_id'=>$v['offer_id'],'lp_lead'=>1,'click_lead'=>1))
+                                               ->whereBetween('click_time',[$start_timestamp,$end_timestamp])
+                                               ->count();
             //$offer[$k]['views'] = CampaignsClick::where(array('camp_id'=>$camp_id,'offer_id'=>$v['offer_id']))->sum('lp_view');
             $offer[$k]['offer_all_payout'] = $offer[$k]['cvrs'] * $v['offer_payout'];
             if($offer[$k]['clicks'] > 0){
@@ -288,7 +313,6 @@ class CampaignsService extends BaseService {
                 $offer[$k]['cvr_rate'] = 0;
             }
         }
-        //先计算出选中时区，一天之内的时间戳，比如选择today 选择-4时区，那就是计算-4时区今天之内的时间戳，然后根据时间戳筛选
         return $offer;
     }
 
@@ -312,9 +336,22 @@ class CampaignsService extends BaseService {
         if(!$camp_id || !$token_id){
             return ['status'=>'false','msg'=>'参数错误'];
         }
+        $date_type = isset($param['date_type']) ? intval($param['date_type']) : 0;
+        $timezone = isset($param['timezone']) ? $param['timezone'] : '';
         //DB::connection()->enableQueryLog();
+        $timestamp = $this->getTimestamp($date_type);
+        $start_timestamp = $timestamp['start'];
+        $end_timestamp = $timestamp['end'];
+
+        if($timezone){
+            date_default_timezone_set('Etc/GMT'.$timezone);
+        }
         $select = $token_id.' as token,count(camp_id) as clicks,sum(click_lead) as leads, ROUND(click_cpc, 3) as CPC,IFNULL(round((sum(mt_click.click_lead)/sum(mt_click.click_offer))*100,2),0) AS offer_cvr,Sum(mt_click.click_offer) AS lp_clicks,IFNULL(round((sum(mt_click.click_offer)/count(mt_click.click_id))*100,2),0) AS lp_ctr,IFNULL(round((sum(mt_click.click_lead)/count(mt_click.click_id))*100,2),0) AS lp_cvr,Sum(mt_click.lp_view) AS lp_views';
-        $data['data'] = CampaignsClick::select(DB::raw($select))->where(array('camp_id'=>$camp_id,'click_multi'=>0))->groupBy($token_id)->get()->toArray();
+        $data['data'] = CampaignsClick::select(DB::raw($select))
+                                      ->where(array('camp_id'=>$camp_id,'click_multi'=>0))
+                                      ->whereBetween('click_time',[$start_timestamp,$end_timestamp])
+                                      ->groupBy($token_id)
+                                      ->get()->toArray();
         //$data['']
         //$data = collect($data)->->toArray();
         //dd(DB::getQueryLog());
@@ -365,5 +402,52 @@ class CampaignsService extends BaseService {
         $log['uid'] = $this->uid;
         $log['username'] = $this->username;
         CampaignsLogs::create($log);
+    }
+
+    public function getTimestamp($date_type){
+
+        $carbon = new Carbon();
+        switch ($date_type){
+            case 1:     //今天
+                $start_timestamp = strtotime($carbon->startOfDay());
+                $end_timestamp   = strtotime($carbon->endOfDay());
+                break;
+            case 2:     //昨天
+                $start_timestamp = strtotime($carbon->yesterday()->startOfDay());
+                $end_timestamp   = strtotime($carbon->yesterday()->endOfDay());
+                break;
+            case 3:     //本周
+                $start_timestamp = mktime(0,0,0,date('m'),date('d')-date('w')+1,date('Y'));
+                //$end_timestamp   = mktime(23,59,59,date('m'),date('d')-date('w')+7,date('Y'));
+                $end_timestamp   = time();
+                break;
+            case 4:     //上周
+                $start_timestamp = mktime(0,0,0,date('m'),date('d')-date('w')+1-7,date('Y'));
+                $end_timestamp   = mktime(23,59,59,date('m'),date('d')-date('w')+7-7,date('Y'));
+                break;
+            case 5:     //本月
+                $start_timestamp = strtotime($carbon->startOfMonth());
+                //$end_timestamp   = strtotime($carbon->endOfMonth());
+                $end_timestamp   = time();
+                break;
+            case 6:     //上月
+                $start_timestamp = mktime(0,0,0,date('m')-1,1,date('Y'));
+                $end_timestamp   = mktime(23,59,59,date('m')-1,date('t'),date('Y'));
+                break;
+            case 7:     //本年
+                $start_timestamp = strtotime($carbon->startOfYear());
+                //$end_timestamp   = strtotime($carbon->endOfYear());
+                $end_timestamp   = time();
+                break;
+            case 8:     //去年
+                $start_timestamp = mktime(0,0,0,1,1,date('Y')-1);
+                $end_timestamp   = mktime(23,59,59,12,date('t'),date('Y')-1);
+                break;
+            default:
+                $start_timestamp = 0;
+                $end_timestamp   = time();
+                break;
+        }
+        return ['start'=>$start_timestamp,'end'=>$end_timestamp];
     }
 }
