@@ -45,7 +45,7 @@ class CampaignsService extends BaseService {
         //$keywords = isset($param['keywords']) ? trim($param['keywords']) : '';
         $query = Campaigns::select('camp_status','camp_name','camp_cpc','camp_id')
                           ->orderBy('camp_id','DESC')
-                          ->orderBy('camp_status','DESC');
+                          ->where('camp_status',0);
 
         /*if($keywords){
             $query->where('camp_name', 'like', '%' . $keywords . '%');
