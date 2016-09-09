@@ -16,6 +16,6 @@ class UsersSeeder extends Seeder
         factory(App\User::class, 2)->create();
         $admin = factory(App\User::class, 'admin')->create(['email' => 'first@admin.com']);
 
-        $this->command->info("admin账户. Username: $admin->email,  Password: 123pass");
+        $this->command->info("admin账户. Username: $admin->username,  Password: 123pass");
     }
 }
