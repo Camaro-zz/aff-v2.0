@@ -74,16 +74,17 @@ class CampaignsService extends BaseService {
         $timestamp = $this->getTimestamp($date_type);
         $start_timestamp = $timestamp['start'];
         $end_timestamp = $timestamp['end'];
-        $select = 'camp_id, (count(click_id)-sum(click_multi)) as clicks,sum(click_lead) as leads, ROUND(click_cpc, 3) as cpc,IFNULL(round((sum(click_lead)/sum(click_offer))*100,2),0) AS offer_cvr,Sum(click_offer) AS lpclicks,IFNULL(round((sum(click_offer)/count(click_id))*100,2),0) AS ctr,IFNULL(round((sum(click_lead)/count(click_id))*100,2),0) AS cvr,Sum(lp_view) AS lpviews,click_leadvalue';
+        $select = 'camp_id, (count(click_id)-sum(click_multi)) as clicks,sum(click_lead) as leads, ROUND(click_cpc, 3) as cpc,IFNULL(round((sum(click_lead)/sum(click_offer))*100,2),0) AS offer_cvr,Sum(click_offer) AS lpclicks,IFNULL(round((sum(click_offer)/count(click_id))*100,2),0) AS ctr,IFNULL(round((sum(click_lead)/count(click_id))*100,2),0) AS cvr,Sum(lp_view) AS lpviews,sum(click_leadvalue*click_lead) as rev';
         $new_query = CampaignsClick::select(DB::raw($select))
             ->whereIn('camp_id',$camp_ids)
             ->whereBetween('click_time',[$start_timestamp,$end_timestamp])
             ->groupBy('camp_id')
             ->orderBy('camp_id','DESC')
             ->get()->toArray();
+        //dd($new_query);
         foreach ($new_query as $k=>$v){
             $new_query[$k]['cost'] = round($v['cpc'] * $v['clicks'], 2);
-            $new_query[$k]['rev'] = round($v['leads'] * $v['click_leadvalue'], 2);
+            $new_query[$k]['rev'] = round($v['rev'], 2);
             $new_query[$k]['profit'] = round($new_query[$k]['rev'] - $new_query[$k]['cost'], 2);
             $new_query[$k]['roi'] = $new_query[$k]['cost'] == 0 ? 0 : round($new_query[$k]['profit'] / $new_query[$k]['cost'] * 100, 1);
         }
