@@ -97,4 +97,4 @@ Route::group(['prefix' => 'camp', 'middleware' => 'authorized:view-dashboard'], 
     Route::get('tokens/info/{id}.json', 'Campaigns\CampaignsController@getGroupBy');
 });
 
-Route::post('admin/add_user.json', 'Auth\AuthController@');
+Route::post('admin/add_user.json', 'Auth\AuthController@postSetUsers');

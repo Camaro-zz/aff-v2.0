@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Validator;
 use App\Http\Controllers\Controller;
@@ -91,6 +92,10 @@ class AuthController extends Controller
         $user->save();
 
         return $user;
+    }
+
+    public function postSetUsers(Request $request){
+
     }
     
 }

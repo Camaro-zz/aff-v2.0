@@ -264,8 +264,8 @@ export default {
             tokens: [],
             selectd_token: 0,
             token_group_data: [],
-            timezone: -8,
-            date_type: 0,
+            timezone: 12,
+            date_type: 1,
         }
     },
     methods: {

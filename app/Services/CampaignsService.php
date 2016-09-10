@@ -39,8 +39,11 @@ class CampaignsService extends BaseService {
         $page = isset($param['page']) ? $param['page'] : 1;
         $limit = isset($param['limit']) ? $param['limit'] : 10;
         $uid = isset($param['uid']) ? $param['uid'] : 0;
-        $date_type = isset($param['date_type']) ? intval($param['date_type']) : 0;
-        $timezone = isset($param['timezone']) ? intval($param['date_type']) : '';
+        $date_type = isset($param['date_type']) ? intval($param['date_type']) : 1;
+        $timezone = isset($param['timezone']) ? intval($param['date_type']) : 12;
+        if(intval($timezone) > 0){
+            $timezone = '+'.$timezone;
+        }
         $offset = ($page - 1) * $limit;
         //$keywords = isset($param['keywords']) ? trim($param['keywords']) : '';
         $query = Campaigns::select('camp_status','camp_name','camp_cpc','camp_id')
@@ -278,8 +281,8 @@ class CampaignsService extends BaseService {
         if(!$camp_id){
             return ['status'=>'false','msg'=>'参数错误'];
         }
-        $date_type = isset($param['date_type']) ? intval($param['date_type']) : 0;
-        $timezone = isset($param['timezone']) ? $param['timezone'] : '';
+        $date_type = isset($param['date_type']) ? intval($param['date_type']) : 1;
+        $timezone = isset($param['timezone']) ? $param['timezone'] : 12;
 
         $offer = CampaignsOffers::select('offer_id','offer_name','offer_url','offer_weight','offer_payout')
                                 ->where('camp_id',$camp_id)
@@ -287,11 +290,13 @@ class CampaignsService extends BaseService {
         if(!$offer){
             return ['status'=>false,'msg'=>'该活动下没有offer'];
         }
-        
+
         $timestamp = $this->getTimestamp($date_type);
         $start_timestamp = $timestamp['start'];
         $end_timestamp = $timestamp['end'];
-
+        if(intval($timezone) > 0){
+            $timezone = '+'.$timezone;
+        }
         if($timezone){
             date_default_timezone_set('Etc/GMT'.$timezone);
         }
@@ -342,7 +347,9 @@ class CampaignsService extends BaseService {
         $timestamp = $this->getTimestamp($date_type);
         $start_timestamp = $timestamp['start'];
         $end_timestamp = $timestamp['end'];
-
+        if(intval($timezone) > 0){
+            $timezone = '+'.$timezone;
+        }
         if($timezone){
             date_default_timezone_set('Etc/GMT'.$timezone);
         }
