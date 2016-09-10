@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('bio')->nullable();
             $table->integer('role_level')->default(1)->unsigned()->index();
+            $table->string('avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -28,9 +28,9 @@ class AuthServiceProvider extends ServiceProvider
 
         //admin can do whatever he wants
         $gate->before(function ($user, $ability) {
-            if ($user->isAdmin()) {
+            //if ($user->isAdmin()) {
                 return true;
-            }
+            //}
         });
 
         $gate->define('manage-post', function ($user, $post) {

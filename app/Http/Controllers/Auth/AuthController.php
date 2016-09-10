@@ -94,8 +94,5 @@ class AuthController extends Controller
         return $user;
     }
 
-    public function postSetUsers(Request $request){
-
-    }
     
 }

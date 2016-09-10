@@ -27,6 +27,9 @@
                       <div class="btn-group">
                           <a class="btn btn-info" v-link="{ name: 'camp_user', params: {hashid: user.id}}">camp授权设置</a>
                       </div>
+                      <div class="btn-group">
+                          <a class="btn btn-warning" v-on:click="delUser(user.id)">删除</a>
+                      </div>
                   </td>
                 </tr>
               </table>
@@ -53,6 +56,15 @@ export default {
       showUsers(){
           this.$http({url: '/camp/users.json', method: 'GET'}).then(function (response) {
               this.$set('users', response.data.data)
+          })
+      },
+      delUser(id){
+          this.$http({url: '/admin/del_user/'+id+'.json', method: 'post'}).then(function (response) {
+              if(response.data.status == true){
+                  show_stack_success('删除成功！', response)
+              }else{
+                  show_stack_error(response.data.msg, response)
+              }
           })
       }
   }

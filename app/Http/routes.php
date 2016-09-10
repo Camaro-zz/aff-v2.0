@@ -74,7 +74,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'authorized:view-dashboard'],
 Route::auth();
 
 
-Route::group(['prefix' => 'camp'], function () {
+Route::group(['prefix' => 'camp', 'middleware' => 'auth.api'], function () {
     Route::get('list.json', 'Campaigns\CampaignsController@getCamps');//获取campaigns列表
     Route::get('list_num.json', 'Campaigns\CampaignsController@getCampsNum');//获取campaign数量
     Route::put('edit/{camp_id}.json', 'Campaigns\CampaignsController@putCamp');//修改campaign内容
@@ -97,4 +97,5 @@ Route::group(['prefix' => 'camp'], function () {
     Route::get('tokens/info/{id}.json', 'Campaigns\CampaignsController@getGroupBy');
 });
 
-Route::post('admin/add_user.json', 'Auth\AuthController@postSetUsers');
+Route::post('admin/add_user.json','Admin\AdminController@postAddUser');
+Route::post('admin/del_user/{id}.json','Admin\AdminController@postDelUser');
