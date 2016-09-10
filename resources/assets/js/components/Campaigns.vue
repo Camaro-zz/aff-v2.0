@@ -193,8 +193,8 @@ export default {
   data () {
     return {
       list: [],
-      timezone: -8,
-      date_type: 0,
+      timezone: 12,
+      date_type: 1,
       cur: 1,
     }
   },
