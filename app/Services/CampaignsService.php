@@ -40,7 +40,7 @@ class CampaignsService extends BaseService {
         $limit = isset($param['limit']) ? $param['limit'] : 10;
         $uid = isset($param['uid']) ? $param['uid'] : 0;
         $date_type = isset($param['date_type']) ? intval($param['date_type']) : 1;
-        $timezone = isset($param['timezone']) ? intval($param['date_type']) : 12;
+        $timezone = isset($param['timezone']) ? intval($param['timezone']) : 12;
         if(intval($timezone) > 0){
             $timezone = '+'.$timezone;
         }
@@ -458,4 +458,37 @@ class CampaignsService extends BaseService {
         }
         return ['start'=>$start_timestamp,'end'=>$end_timestamp];
     }
+
+    /*public function getTimeZone($timezone){
+        switch ($timezone){
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 0:
+                break;
+            case 0:
+                break;
+            case 0:
+                break;
+            case 0:
+                break;
+            case 0:
+                break;
+            case 0:
+                break;
+            case 0:
+                break;
+            case 0:
+                break;
+            case 0:
+                break;
+            case 0:
+                break;
+        }
+    }*/
 }
