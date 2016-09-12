@@ -16,13 +16,18 @@ class AdminController extends Controller
         $this->adminService = $adminService;
     }
 
-    public function postAddUsers(Request $request){
-        $data = $this->adminService->postAddUser($request->all());
+    public function postSaveUser(Request $request){
+        $data = $this->adminService->postSaveUser($request->all());
         return Response::json($data, 200);
     }
 
     public function postDelUser($uid){
         $data = $this->adminService->postDelUser($uid);
+        return Response::json($data, 200);
+    }
+
+    public function getUserInfo($uid){
+        $data = $this->adminService->getUserInfo($uid);
         return Response::json($data, 200);
     }
 }

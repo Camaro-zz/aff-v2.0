@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\Setting;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -54,6 +55,18 @@ class AuthController extends Controller
 
         return redirect()->intended($this->redirectPath());
 
+    }
+
+    public function showRegistrationForm(){
+        $setting = Setting::first();
+        if($setting['open_register'] == 0){
+            return redirect()->intended($this->redirectPath());
+        }
+        if (property_exists($this, 'registerView')) {
+            return view($this->registerView);
+        }
+
+        return view('auth.register');
     }
 
     /**

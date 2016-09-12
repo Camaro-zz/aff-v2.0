@@ -11,11 +11,39 @@ class UsersSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->truncate();
+        DB::table('users')->insert([
+            'username' => 'admin',
+            'name' => 'admin',
+            'email' => 'admin@163.com',
+            'password' => bcrypt('123456'),
+            'role_level' => 9,
+            'remember_token' => str_random(10),
+            'created_at' => \Carbon\Carbon::now(),
+            'updated_at' => \Carbon\Carbon::now(),
+        ]);
 
-        factory(App\User::class, 2)->create();
-        $admin = factory(App\User::class, 'admin')->create(['email' => 'first@admin.com']);
+        DB::table('users')->insert([
+            'username' => 'aaa',
+            'name' => 'aaa',
+            'email' => 'aaa@163.com',
+            'password' => bcrypt('123456'),
+            'role_level' => 1,
+            'remember_token' => str_random(10),
+            'created_at' => \Carbon\Carbon::now(),
+            'updated_at' => \Carbon\Carbon::now(),
+        ]);
 
-        $this->command->info("admin账户. Username: $admin->username,  Password: 123pass");
+        DB::table('users')->insert([
+            'username' => 'bbb',
+            'name' => 'bbb',
+            'email' => 'bbb@163.com',
+            'password' => bcrypt('123456'),
+            'role_level' => 1,
+            'remember_token' => str_random(10),
+            'created_at' => \Carbon\Carbon::now(),
+            'updated_at' => \Carbon\Carbon::now(),
+        ]);
+
+        $this->command->info("admin账户. Username: admin,  Password: 123456");
     }
 }

@@ -18,6 +18,11 @@
         <!-- Your Page Content Here -->
         <!-- route outlet -->
         <router-view></router-view>
+
+        <div class="alert {{alert_class}} fade fixed {{show_class}}">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+           {{msg}}
+        </div>
       </section>
       <!-- /.content -->
     </div>
@@ -36,6 +41,32 @@ export default {
     Navbar,
     Sidebar
   },
+  data(){
+    return {
+      msg: 'test',
+      show_class: 'out',
+      alert_class: 'alert-success',
+    }
+  },
+  methods: {
+    changeAlert(type, message){
+      if(type == 0){
+        this.show_class = 'out';
+      }else{
+        this.show_class = 'in';
+      }
+      this.msg = message;
+    }
+  },
   replace: false
 }
 </script>
+
+<style>
+  .fixed {
+    position: fixed;
+    top: 50px;
+    width: 30%;
+    right: 30%;
+  }
+</style>

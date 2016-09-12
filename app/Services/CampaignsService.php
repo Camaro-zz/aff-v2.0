@@ -203,11 +203,6 @@ class CampaignsService extends BaseService {
     }
 
     public function getUsers(){
-        /*date_default_timezone_set('Etc/GMT-8');
-        $carbon = new Carbon();
-        $start_timestamp = mktime(0,0,0,1,1,date('Y')-1);
-        $end_timestamp   = mktime(23,59,59,12,date('t'),date('Y')-1);
-        dd($end_timestamp);*/
         if($this->level != 9){
             return ['status'=>true,'msg'=>'没有权限'];
         }

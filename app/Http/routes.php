@@ -97,5 +97,12 @@ Route::group(['prefix' => 'camp', 'middleware' => 'auth.api'], function () {
     Route::get('tokens/info/{id}.json', 'Campaigns\CampaignsController@getGroupBy');
 });
 
-Route::post('admin/add_user.json','Admin\AdminController@postAddUser');
+Route::post('admin/save_user.json','Admin\AdminController@postSaveUser');
 Route::post('admin/del_user/{id}.json','Admin\AdminController@postDelUser');
+Route::get('user/user_info/{id}.json','Admin\AdminController@getUserInfo');
+
+
+Route::group(['prefix' => 'setting', 'middleware' => 'auth.api'], function () {
+    Route::get('info.json', 'Setting\SettingController@getSetting');
+    Route::post('update.json', 'Setting\SettingController@updateSetting');
+});

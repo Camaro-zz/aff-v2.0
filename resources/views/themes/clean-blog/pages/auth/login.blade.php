@@ -62,7 +62,9 @@
                   <i class="fa fa-btn fa-sign-in"></i> Login
                 </button>
                   <a class="btn btn-link" href="{{ url('/password/reset') }}">忘记密码?</a>
+                @if ($open_register == 1)
                   <a class="btn btn-link" href="{{ url('/register') }}">没有帐号?</a>
+                @endif
             </div>
         </div>
 
