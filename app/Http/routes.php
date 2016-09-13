@@ -83,6 +83,7 @@ Route::group(['prefix' => 'camp', 'middleware' => 'auth.api'], function () {
     Route::get('info/{camp_id}.json', 'Campaigns\CampaignsController@getCamp');
 
     Route::get('users.json', 'Campaigns\CampaignsController@getUsers');//获取users列表
+    Route::get('logs.json', 'Campaigns\CampaignsController@getLogs');//获取logs列表
 
     Route::get('{camp_id}/offer.json', 'Campaigns\CampaignsController@getOffer');//根据活动id获取offer内容
     Route::put('offer.json', 'Campaigns\CampaignsController@putOffer');//修改LP内容

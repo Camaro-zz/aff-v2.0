@@ -39,6 +39,9 @@ router.map({
     '/setting': {
         component: require('./components/Setting.vue')
     },
+    '/logs': {
+        component: require('./components/Logs.vue')
+    },
     '/users/camp/:hashid': {
         name: 'camp_user',
         component: require('./components/CampUsers.vue')

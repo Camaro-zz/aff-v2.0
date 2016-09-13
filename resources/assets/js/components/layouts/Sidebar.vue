@@ -34,6 +34,7 @@
         <template v-if="user.level == 9">
         <li><a v-link="{ path: '/users' }"><i class="fa fa-users"></i> <span>Users</span></a></li>
         <li><a v-link="{ path: '/setting' }"><i class="fa fa-users"></i> <span>Setting</span></a></li>
+          <li><a v-link="{ path: '/logs' }"><i class="fa fa-users"></i> <span>操作日志</span></a></li>
         </template>
       </ul>
       <!-- /.sidebar-menu -->

@@ -22,6 +22,7 @@ class CampaignsService extends BaseService {
         $this->uid = $user->id;
         $this->level = $user->role_level;
         $this->username = $user->username;
+        $this->name = $user->name;
     }
 
     public function getCamp($camp_id){
@@ -411,7 +412,21 @@ class CampaignsService extends BaseService {
         }
         $log['uid'] = $this->uid;
         $log['username'] = $this->username;
+        $log['name'] = $this->name;
         CampaignsLogs::create($log);
+    }
+
+    public function getLogs($params){
+        $page = isset($params['page']) ? $params['page'] : 1;
+        $limit = isset($params['limit']) ? $params['limit'] : 10;
+        $offset = ($page - 1) * $limit;
+        $query = CampaignsLogs::select('id','name','username','memo','created_at')
+                              ->orderBy('created_at','DESC');
+        $count = $query->count();
+        $query->skip($offset);
+        $query->take($limit);
+        $logs = $query->get()->toArray();
+        return ['count'=>ceil($count/$limit),'data'=>$logs,'page'=>$page];
     }
 
     public function getTimestamp($date_type){

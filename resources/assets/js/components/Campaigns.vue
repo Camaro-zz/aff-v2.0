@@ -145,6 +145,7 @@
     </div>
   </div>
 </section>
+    <div id="loading" class="loading out"></div>
 </template>
 
 <style>
@@ -184,6 +185,24 @@
     margin: 0px 4px;
     font-size: 12px;
   }
+  .loading{
+      width:100%;
+      height:100%;
+      position: absolute;
+      top:0;
+      left:0;
+      /*line-height:56px;*/
+      color:#fff;
+      /*padding-left:60px;*/
+      font-size:15px;
+      background: #000 url(../img/loader.gif) no-repeat 50% 50%;
+      opacity: 0.7;
+      z-index:9999;
+      /*-moz-border-radius:20px;
+      -webkit-border-radius:20px;
+      border-radius:20px;*/
+      filter:progid:DXImageTransform.Microsoft.Alpha(opacity=70);
+  }
 </style>
 
 <script>
@@ -191,7 +210,7 @@ import Multiselect from 'vue-multiselect/lib/vue-multiselect.js'
 import { stack_bottomright, show_stack_success, show_stack_error, show_stack_info } from '../Pnotice.js'
 
 export default {
-  //props: ['cur', 'all'],
+  props: ['cur', 'all'],
   components: {
     Multiselect
   },
@@ -215,10 +234,12 @@ export default {
       var timezone  = this.timezone;
       var page = this.cur ? this.cur : 1;
       var group_id = this.select_group_id;
+        $("#loading").show();
       this.$http({url: '/camp/list.json?page='+page+'&date_type='+date_type+'&timezone='+timezone+'&select_group_id='+group_id, method: 'GET'}).then(function (response) {
         this.$set('list', response.data.data)
         this.$set('all', response.data.count)
         this.$set('cur', response.data.page)
+          $("#loading").hide();
       })
     },
     btnClick: function(data){

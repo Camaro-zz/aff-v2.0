@@ -82,4 +82,9 @@ class CampaignsController extends Controller {
         $data = $this->campaignsService->getGroups();
         return Response::json($data, 200);
     }
+
+    public function getLogs(Request $request){
+        $data = $this->campaignsService->getLogs($request->all());
+        return Response::json($data, 200);
+    }
 }
