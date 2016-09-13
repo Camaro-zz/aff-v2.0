@@ -51,6 +51,14 @@
               <option value="-10">东10时区</option>
               <option value="-11">东11时区</option>
             </select>
+
+            分组选项：
+            <select name="select_group_id" v-model="select_group_id" v-on:change="fetchCampaigns()">
+              <option value="0">所有分组</option>
+              <template v-for="group in groups">
+                <option value="{{group.group_id}}">{{group.group_name}}</option>
+              </template>
+            </select>
           </h3>
         </div>
         <!-- /.box-header -->
@@ -183,12 +191,13 @@ import Multiselect from 'vue-multiselect/lib/vue-multiselect.js'
 import { stack_bottomright, show_stack_success, show_stack_error, show_stack_info } from '../Pnotice.js'
 
 export default {
-  props: ['cur', 'all'],
+  //props: ['cur', 'all'],
   components: {
     Multiselect
   },
   ready () {
-   this.fetchCampaigns()
+    this.fetchCampaigns()
+    this.fetchGroups()
   },
   data () {
     return {
@@ -196,6 +205,8 @@ export default {
       timezone: 12,
       date_type: 1,
       cur: 1,
+      select_group_id: 0,
+      groups: [],
     }
   },
   methods: {
@@ -203,7 +214,8 @@ export default {
       var date_type = this.date_type;
       var timezone  = this.timezone;
       var page = this.cur ? this.cur : 1;
-      this.$http({url: '/camp/list.json?page='+page+'&date_type='+date_type+'&timezone='+timezone, method: 'GET'}).then(function (response) {
+      var group_id = this.select_group_id;
+      this.$http({url: '/camp/list.json?page='+page+'&date_type='+date_type+'&timezone='+timezone+'&select_group_id='+group_id, method: 'GET'}).then(function (response) {
         this.$set('list', response.data.data)
         this.$set('all', response.data.count)
         this.$set('cur', response.data.page)
@@ -215,6 +227,11 @@ export default {
         this.$dispatch('btn-click',data)
         this.fetchCampaigns()
       }
+    },
+    fetchGroups(){
+      this.$http({url: '/camp/group.json', method: 'GET'}).then(function (response) {
+        this.$set('groups', response.data)
+      })
     },
     goPage(type){
       if(type == 1){

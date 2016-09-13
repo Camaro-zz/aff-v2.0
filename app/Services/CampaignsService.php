@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Models\Campaigns;
 use App\Models\CampaignsClick;
+use App\Models\CampaignsGroups;
 use App\Models\CampaignsLPs;
 use App\Models\CampaignsLead;
 use App\Models\CampaignsOffers;
@@ -41,6 +42,7 @@ class CampaignsService extends BaseService {
         $uid = isset($param['uid']) ? $param['uid'] : 0;
         $date_type = isset($param['date_type']) ? intval($param['date_type']) : 1;
         $timezone = isset($param['timezone']) ? intval($param['timezone']) : 12;
+        $group_id = isset($param['select_group_id']) ? intval($param['select_group_id']) : 0;
         if(intval($timezone) > 0){
             $timezone = '+'.$timezone;
         }
@@ -54,16 +56,21 @@ class CampaignsService extends BaseService {
             $query->where('camp_name', 'like', '%' . $keywords . '%');
         }*/
 
+        if($group_id > 0){
+            $query->where('group_id',$group_id);
+        }
+
         if($this->level != 9){//如果当前访问的不是超级管理员
             $this_camp_ids = $this->getCampUsers($this->uid);
             $query->whereIn('mt_campaigns.camp_id', $this_camp_ids);
         }
 
+
         $count = $query->count();
         $query->skip($offset);
         $query->take($limit);
         $res = $query->get()->toArray();
-
+        $camp_ids = [];
         foreach ($res as $k=>$v){
             $camp_ids[] = $v['camp_id'];
             $camps[$v['camp_id']] = $v;
@@ -486,4 +493,18 @@ class CampaignsService extends BaseService {
                 break;
         }
     }*/
+
+    /**
+     * 获取分组
+     */
+    public function getGroups(){
+        $groups = CampaignsGroups::where('group_deleted', 0)->get();
+        if(!$groups){
+            $groups = '';
+        }else{
+            $groups = $groups->toArray();
+        }
+
+        return $groups;
+    }
 }

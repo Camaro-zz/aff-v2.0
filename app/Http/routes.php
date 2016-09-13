@@ -95,6 +95,7 @@ Route::group(['prefix' => 'camp', 'middleware' => 'auth.api'], function () {
 
     Route::get('tokens/{id}.json', 'Campaigns\CampaignsController@getGroupByOption');
     Route::get('tokens/info/{id}.json', 'Campaigns\CampaignsController@getGroupBy');
+    Route::get('group.json', 'Campaigns\CampaignsController@getGroups');
 });
 
 Route::post('admin/save_user.json','Admin\AdminController@postSaveUser');
